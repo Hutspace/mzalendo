@@ -12,6 +12,8 @@ from django.views.generic.list_detail import object_detail, object_list
 from django.views.decorators.cache import cache_control, never_cache
 from django.views.generic import ListView, DetailView
 from django.core.cache import cache
+from django.conf import settings
+from django.http import Http404
 
 from mzalendo.core import models
 from mzalendo.helpers import geocode
@@ -25,7 +27,7 @@ def home(request):
         current_slug = request.GET.get('before')
     featured_person = models.Person.objects.get_next_featured(current_slug, request.GET.get('before'))
     return render_to_response(
-        'core/home.html',
+        'home.html',
         {
           'featured_person': featured_person,
         },
@@ -54,17 +56,26 @@ class PlaceDetailView(DetailView):
         context['place_type_count'] = models.Place.objects.filter(kind=self.object.kind).count()
         return context
 
-def place_kind(request, slug):
-    print slug
-    place_kind = get_object_or_404(
-        models.PlaceKind,
-        slug=slug
-    )
+
+def place_kind(request, slug=None):
+
+    if slug and slug != 'all':
+        kind = get_object_or_404(
+            models.PlaceKind,
+            slug=slug
+        )
+        queryset = kind.place_set.all()
+    else:
+        kind = None
+        queryset = models.Place.objects.all()
 
     return object_list(
         request,
-        queryset = place_kind.place_set.all(),
-        extra_context = { 'kind': place_kind, },
+        queryset = queryset,
+        extra_context = {
+            'kind':       kind,
+            'all_kinds':  models.PlaceKind.objects.all(),
+        },
     )
 
 
@@ -148,28 +159,23 @@ def featured_person(request, current_slug, direction):
     )
 
 
-class PlaceListView(ListView):
-    model = models.Place
-    def get_context_data(self, **kwargs):
-        # Call the base implementation first to get a context
-        context = super(ListView, self).get_context_data(**kwargs)
-        if self.context_object_name:
-            context[self.context_object_name] = True
-        else:
-            context['all_places'] = True            
-        return context
-
-
 # We really want this to be cached
 @cache_control(max_age=300, s_maxage=300, public=True)
 def twitter_feed(request):
 
+    # for now ignore the screen name that we get sent.
+    twitter_name = settings.TWITTER_ACCOUNT_NAME
+
+    # If we don't have a twitter name we can't fetch it
+    if not twitter_name:
+        raise Http404
+
     # get the json from the cache, or fetch it if needed
-    cache_key = 'MzalendoWatch-twitter-feed'
+    cache_key = twitter_name + '-twitter-feed'
     json = cache.get(cache_key)
 
     if not json:
-        json = urllib2.urlopen('http://api.twitter.com/1/statuses/user_timeline.json?screen_name=MzalendoWatch&count=4').read()
+        json = urllib2.urlopen('http://api.twitter.com/1/statuses/user_timeline.json?screen_name='+twitter_name+'&count=4').read()
         cache.set( cache_key, json, 300 )
 
     return HttpResponse(

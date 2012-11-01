@@ -118,7 +118,7 @@ STATIC_URL = '/static/'
 
 # integer which when updated causes the caches to fetch new content. See note in
 # 'base.html' for a better alternative in Django 1.4
-STATIC_GENERATION_NUMBER = 21
+STATIC_GENERATION_NUMBER = 22
 
 # URL prefix for admin static files -- CSS, JavaScript and images.
 # Make sure to use a trailing slash.
@@ -217,6 +217,11 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "mzalendo.core.context_processors.add_settings",    
 )
 
+COUNTRY_APP = config.get('COUNTRY_APP')
+if not COUNTRY_APP:
+    raise Exception("You need to set 'COUNTRY_APP' in your config")
+
+
 INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -240,8 +245,9 @@ INSTALLED_APPS = (
     'markitup',
     'social_auth',
 
-    'comments2',
     'mapit',
+
+    COUNTRY_APP,
 
     'images',
     'sorl.thumbnail',
@@ -252,17 +258,17 @@ INSTALLED_APPS = (
     'info',
     'tasks',
     'core',
-    'hansard',
     'feedback',
-    'projects',
     'scorecards',
     'search',
     'user_profile',
     'file_archive',
-
-    'place_data',
-    'kenya',
 )
+
+# add the optional apps
+ALL_OPTIONAL_APPS = ( 'hansard', 'projects', 'place_data' )
+OPTIONAL_APPS = tuple( config.get( 'OPTIONAL_APPS', [] ) )
+INSTALLED_APPS += OPTIONAL_APPS
 
 # mapit related settings
 MAPIT_AREA_SRID = 4326
@@ -415,4 +421,39 @@ SOUTH_TESTS_MIGRATE = False
 TEST_RUNNER   = 'django_selenium.selenium_runner.SeleniumTestRunner'
 SELENIUM_PATH = config.get( 'SELENIUM_PATH', None )
 
+
+# For the disqus comments
+DISQUS_SHORTNAME = config.get( 'DISQUS_SHORTNAME', None )
+
+
+# Polldaddy widget ID - from http://polldaddy.com/
+# Use the widget rather than embedding a poll direct as it will allow the poll 
+# to be changed without having to alter the settings or HTML. If left blank
+# then no poll will be shown.
+POLLDADDY_WIDGET_ID = config.get( 'POLLDADDY_WIDGET_ID', None );
+
+
+# The name of a Twitter account related to this website. This will be used to
+# pull in the latest tweets on the homepage and in the share on twitter links.
+TWITTER_ACCOUNT_NAME = config.get( 'TWITTER_ACCOUNT_NAME', None );
+
+# RSS feed to the blog related to this site. If present will cause the 'Latest
+# News' to appear on the homepage.
+BLOG_RSS_FEED = config.get( 'BLOG_RSS_FEED', None )
+
+
+# create the ENABLED_FEATURES hash that is used to toggle features on and off.
+ENABLED_FEATURES = {}
+for key in ALL_OPTIONAL_APPS: # add in the optional apps
+    ENABLED_FEATURES[key] = key in INSTALLED_APPS
+
+
+
+# list of all the position title slugs considered to be politicians
+POLITICIAN_TITLE_SLUGS = [
+    'mp',
+    'nominated-member-parliament',
+    'representative',
+    'senator',
+]
 
