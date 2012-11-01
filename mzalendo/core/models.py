@@ -78,7 +78,8 @@ class ManagerBase(models.GeoManager):
 
 class ContactKind(ModelBase):
     name = models.CharField(max_length=200, unique=True)
-    slug = models.SlugField(max_length=200, unique=True, help_text="created from name")
+    slug = models.SlugField(max_length=200, unique=True, 
+        help_text="created from name")
 
     objects = ManagerBase()
 
@@ -92,8 +93,10 @@ class ContactKind(ModelBase):
 class Contact(ModelBase):
     kind = models.ForeignKey('ContactKind')
     value = models.TextField()
-    note = models.TextField(blank=True, help_text="publicly visible, use to clarify contact detail")
-    source = models.CharField(max_length=500, blank=True, default='', help_text="where did this contact detail come from")
+    note = models.TextField(blank=True, 
+        help_text="publicly visible, use to clarify contact detail")
+    source = models.CharField(max_length=500, blank=True, default='', 
+        help_text="where did this contact detail come from")
 
     # link to other objects using the ContentType system
     content_type = models.ForeignKey(ContentType)
@@ -117,7 +120,8 @@ class Contact(ModelBase):
 class InformationSource(ModelBase):
     source = models.CharField(max_length=500)
     note = models.TextField(blank=True)
-    entered = models.BooleanField(default=False, help_text="has the information in this source been entered into this system?")
+    entered = models.BooleanField(default=False, 
+        help_text="has the information in this source been entered into this system?")
 
     # link to other objects using the ContentType system
     content_type = models.ForeignKey(ContentType)
@@ -452,8 +456,10 @@ class PositionTitle(ModelBase):
     name = models.CharField(max_length=200, unique=True)
     slug = models.SlugField(max_length=200, unique=True, help_text="created from name")
     summary = MarkupField(blank=True, default='')
-    original_id = models.PositiveIntegerField(blank=True, null=True, help_text='temporary - used to link to data in original mzalendo.com db')
-    requires_place = models.BooleanField(default=False, help_text="Does this job title require a place to complete the position?")
+    original_id = models.PositiveIntegerField(blank=True, null=True, 
+        help_text='temporary - used to link to data in original mzalendo.com db')
+    requires_place = models.BooleanField(default=False, 
+        help_text="Does this job title require a place to complete the position?")
 
     objects = ManagerBase()
 
@@ -558,10 +564,12 @@ class Position(ModelBase):
 
     person = models.ForeignKey('Person')
     organisation = models.ForeignKey('Organisation', null=True, blank=True)
-    place = models.ForeignKey('Place', null=True, blank=True, help_text="use if needed to identify the position - eg add constituency for an 'MP'" )
+    place = models.ForeignKey('Place', null=True, blank=True, 
+        help_text="use if needed to identify the position - eg add constituency for an 'MP'")
     title = models.ForeignKey('PositionTitle', null=True, blank=True)
     subtitle = models.CharField(max_length=200, blank=True, default='')
-    category = models.CharField(max_length=20, choices=category_choices, default='other', help_text="What sort of position was this?")
+    category = models.CharField(max_length=20, choices=category_choices, default='other', 
+        help_text="What sort of position was this?")
     note = models.CharField(max_length=300, blank=True, default='')
 
     start_date = ApproximateDateField(blank=True, help_text=date_help_text)
@@ -630,7 +638,8 @@ class Position(ModelBase):
 
     def has_known_dates(self):
         """Is there at least one known (not future) date?"""
-        return (self.start_date and not self.start_date.future) or (self.end_date and not self.end_date.future)
+        return (self.start_date and not self.start_date.future) or \
+               (self.end_date and not self.end_date.future)
     
     def _set_sorting_dates(self):
         """Set the sorting dates from the actual dates (does not call save())"""

@@ -1,6 +1,6 @@
 #Mzalendo
 
-This web app allows you to store and share information on public figure,
+This web app allows you to store and share information on public figures,
 especially politicians.
 
 For an overview of the system please see the files in docs/ - especially
