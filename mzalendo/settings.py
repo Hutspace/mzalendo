@@ -217,6 +217,11 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "mzalendo.core.context_processors.add_settings",    
 )
 
+EXT_CONTEXT_PROCESSORS = config.get('EXT_CONTEXT_PROCESSORS')
+
+if EXT_CONTEXT_PROCESSORS:
+    TEMPLATE_CONTEXT_PROCESSORS += tuple(EXT_CONTEXT_PROCESSORS)
+
 COUNTRY_APP = config.get('COUNTRY_APP')
 if not COUNTRY_APP:
     raise Exception("You need to set 'COUNTRY_APP' in your config")
