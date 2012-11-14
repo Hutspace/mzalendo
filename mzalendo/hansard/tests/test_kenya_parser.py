@@ -7,6 +7,7 @@ import subprocess
 
 from django.test import TestCase
 from django.utils import unittest
+from django.conf import settings
 
 from hansard.kenya_parser import KenyaParser, KenyaParserCouldNotParseTimeString
 from hansard.models import Source, Sitting, Entry, Venue, Alias
@@ -16,6 +17,7 @@ from core.models import Person, PositionTitle, Position
 from django_date_extensions.fields import ApproximateDate
 
 
+@unittest.skipUnless( settings.COUNTRY_APP == 'kenya', "Kenya specific tests" )
 class KenyaParserTest(TestCase):
     local_dir          = os.path.abspath( os.path.dirname( __file__ ) )
     sample_pdf         = os.path.join( local_dir, '2011-09-01-sample.pdf'  )
