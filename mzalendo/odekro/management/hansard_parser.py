@@ -2,8 +2,20 @@ import sys
 import re
 import datetime
 
-BLANK, SERIES_VOL_NO, TIME, DATE, START_TIME, \
-HEADING, LINE, SCENE, SPEECH, ACTION, PAGE_HEADER,CONTINUED_SPEECH = range(12)
+# Constants for various types of line that might be found in the transcript
+BLANK            = 'blank'
+SERIES_VOL_NO    = 'series volume number'
+TIME             = 'time'
+DATE             = 'date'
+START_TIME       = 'start time'
+HEADING          = 'heading'
+LINE             = 'line'
+SCENE            = 'scene'
+SPEECH           = 'speech'
+ACTION           = 'action'
+PAGE_HEADER      = 'page header'
+CONTINUED_SPEECH = 'continued speech'
+CHAIR            = 'chair'
 
 SERIES_VOL_NO_PATTERN = r'^\s*([A-Z]+)\s+SERIES\s+VOL\.?\s*(\d+)\s*N(O|o|0)\.?\s*(\d+)\s*$'
 DATE_PATTERN = r'^\s*(\w+\s*,\s*)?(\d+)\w{0,2}\s+(\w+),?\s+(\d+)\s*$'
@@ -26,6 +38,8 @@ ACTION_PATTERN = r'^\s*%s(.+)\s*-\s+(.+)\s+-\s*$' % TITLES_TEMPLATE
 START_TIME_PATTERN = r'The\s+House\s+met\s+at\s+%s' % TIME_TEMPLATE
 TIME_PATTERN = r'^\s*%s$' % TIME_TEMPLATE
 
+CHAIR_PATTERN = r'^\[\s*(.*?)\s+IN\s+THE\s+CHAIR\s*\]$'
+
 MONTHS = dict(jan=1, feb=2, mar=3, apr=4, may=5, jun=6, 
               jul=7, aug=8, sep=9, oct=10, nov=11, dec=12)
 
@@ -35,8 +49,9 @@ ORDINAL_WORDS = dict(first=1, second=2, third=3, fourth=4, fifth=5,
 
 HEADER_PATTERNS = (
     (DATE, DATE_PATTERN),
-    (SERIES_VOL_NO, SERIES_VOL_NO_PATTERN)
-    )
+    (SERIES_VOL_NO, SERIES_VOL_NO_PATTERN),
+    (TIME, START_TIME_PATTERN),
+)
 
 PATTERNS = (
     (SPEECH, SPEECH_PATTERN),
@@ -44,6 +59,7 @@ PATTERNS = (
     (TIME, TIME_PATTERN),
     (START_TIME, START_TIME_PATTERN),
     (PAGE_HEADER, PAGE_HEADER_PATTERN),
+    (CHAIR, CHAIR_PATTERN),
     (CONTINUED_SPEECH, CONTINUED_SPEECH_PATTERN),
     (SCENE, SCENE_PATTERN),
     (ACTION, ACTION_PATTERN),
@@ -68,29 +84,41 @@ def body(lines):
     for i, row in enumerate(lines):
         _, line, _ = row
         #if line.lower().strip().startswith('the house met at'):
-        if line.lower().strip().startswith('printed by department of offical report'):
+        if line.lower().strip().startswith('printed by department of official report'):
             return (x for x in lines[i:])
     return (x for x in lines)
 
 
-def parse_head(lines, nbr=0):
+def parse_head(lines, number_of_breaks=0):
+    """
+    Parse the document to extract the header information. Returns a dict.
+    """
 
-    series, vol, no, date = None, None, None, None
+    series = volume = number = date = time = None
     
     for i, row in enumerate(lines):
         kind, line, match = row
         if SERIES_VOL_NO == kind:
             series = ORDINAL_WORDS[match.group(1).lower()]
-            vol = int(match.group(2))
-            no = int(match.group(4))
+            volume = int(match.group(2))
+            number = int(match.group(4))
         elif DATE == kind:
             date = datetime.date(int(match.group(4)),
                                  MONTHS[match.group(3).lower()[:3]], 
                                  int(match.group(2)))
-        if series and vol and no and date:
-            nbr += i
+        elif TIME == kind:
+            time = parse_time( ''.join( match.groups() ) )
+        if series and volume and number and date and time:
+            number_of_breaks += i
             break
-    return series, vol, no, date, nbr
+
+    return dict(
+        series = series,
+        volume = volume,
+        number = number,
+        date   = date,
+        time   = time,
+    )
 
 def parse_content(lines):
     return
@@ -115,22 +143,25 @@ def parse_body(lines):
                 ahead = False
 
             
+            # store any entry details here. Later we'll add common fields as required
+            entry = None
+
             if kind is SPEECH:
                 if not time == None:
                     speech, kind, line, match, ahead = parse_speech(time, match, lines)
-                    entries.append(dict(speech.items() + dict(section=curr_section, column=curr_col).items()))
+                    entry = dict(speech.items() + dict(section=curr_section, column=curr_col).items())
             elif kind is HEADING:
                 if not time == None:
                     if  line.startswith('Votes and Proceedings and the'):
                         line = 'Votes and Proceedings and the Official Report'
                     curr_section = line.strip().upper()
-                    entries.append(dict(heading=line.strip().upper(), time=time))
+                    entry = dict(heading=line.strip().upper())
             elif kind in (TIME, START_TIME):
                 time = _time(match)
             elif kind is ACTION:
                 if not time == None:
                     person = '%s%s' % (match.group(1), match.group(2))
-                    entries.append(dict(action=match.group(3), name=person.strip()))
+                    entry = dict(action=match.group(3), name=person.strip())
             elif kind is PAGE_HEADER:
                 pages = '%s' % (match.group(1))
                 curr_col = match.group(1) 
@@ -141,9 +172,18 @@ def parse_body(lines):
                 #print 'PREV: ' + str(prev_entry)
                 if not time == None:
                     speech, kind, line, match, ahead = parse_speech(time, match, lines,name=prev_entry['name'])
-                    entries.append(dict(speech.items() + dict(section=curr_section, column=curr_col).items()))     
+                    entry = dict(speech.items() + dict(section=curr_section, column=curr_col).items())
+            elif kind is CHAIR:
+                entry = dict( chair=match.group(1) )
             else:
                 pass
+            
+            if entry:
+                entry['time']     = time
+                entry['kind']     = kind
+                entry['original'] = line.rstrip()
+                
+                entries.append(entry)
         except StopIteration:
             break
 
