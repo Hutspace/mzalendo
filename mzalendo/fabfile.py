@@ -163,12 +163,23 @@ def configure_webapp(db=env.dbname, dbuser=env.dbuser, dbpasswd=''):
 
 
 # ENVIRONMENTS
+def production():
+    env.hosts = ['208.68.37.14']
+    env.user = 'root'  #we need a new user for this; root can't ssh
+    env.domain = 'odekro.org'
+    env.log_level = 'info'
+
+def staging():
+    pass
+
 def dev():
     """local machine."""
     env.hosts = ['0.0.0.0']
 
+# Individual VMs
+
 def vm():
-    """Local VMware test server.
+    """Emmanuel's VMware test server.
 
     Specs: RAM - 512 MB
            HDD - 64bit 20 GB 
@@ -178,8 +189,19 @@ def vm():
     env.domain = 'odekro.vm'
     env.log_level = 'debug'
 
+def vm2():
+    """Emmanuel's 2nd VMware test server.
+
+    Specs: RAM - 512 MB
+           HDD - 64bit 20 GB 
+    """
+    env.hosts = ['192.168.167.135']
+    env.user = 'dev'
+    env.domain = 'odekro.vm2'
+    env.log_level = 'debug'
+
 def ian_vm():
-    """Local VirtualBox test server.
+    """Ian's VirtualBox test server.
 
     Specs: RAM - 512 MB
            HDD - 64bit 20 GB 
@@ -190,25 +212,5 @@ def ian_vm():
     env.domain = 'odekro.vm'
     env.log_level = 'debug'
 
-def vm2():
-    """Local VMware test server.
-
-    Specs: RAM - 512 MB
-           HDD - 64bit 20 GB 
-    """
-    env.hosts = ['192.168.167.135']
-    env.user = 'dev'
-    env.domain = 'odekro.vm'
-    env.log_level = 'debug'
-
-
-def staging():
-    pass
-
-def production():
-    env.hosts = ['208.68.37.14']
-    env.user = 'root'  #we need a new user for this; root can't ssh
-    env.domain = 'odekro.org'
-    env.log_level = 'info'
 
  
