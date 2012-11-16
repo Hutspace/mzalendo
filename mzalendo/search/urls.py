@@ -41,4 +41,7 @@ urlpatterns = patterns('search.views',
         name='hansard_search',
     ),
 
+    # Tag cloud
+    url( r'^tagcloud/$', 'tagcloud', name='tagcloud'),
+
 )

@@ -10,6 +10,7 @@ from django.utils import simplejson
 from core import models
 
 from haystack.query import SearchQuerySet
+from mzalendo.hansard import models as hansard_models
 
 # def location_search(request):
 #     
@@ -70,4 +71,29 @@ def autocomplete(request):
         simplejson.dumps(response_data),
         mimetype='application/json'
     )
-    
+  
+
+def tagcloud(request):
+    """ Return tag cloud JSON results"""
+    # Build a query based on duration default is 1 month
+    cutoff = datetime.date.today() - datetime.timedelta(weeks=1)
+    sqs  = SearchQuerySet().models(hansard_models.Entry).filter(sitting__start_date>=cuttoff)
+
+    # Generate tag cloud from content of returned entries
+    ignore_terms =['and', 'of', 'the','is','to']
+    words = {}
+    for entry in sqs.all():
+        text = entry.object.content
+        for x in text.split():
+            if x.strip() in ignore_terms:
+                pass
+            words[x.strip()] = 1 + words.get(x.strip(), 0)
+
+
+    # return results
+    return HttpResponse(
+        simplejson.dumps(words),
+        mimetype='application/json'
+    }
+
+
