@@ -57,6 +57,6 @@ if settings.ENABLED_FEATURES['hansard']:
     from hansard import models as hansard_models
 
     class HansardEntryIndex(BaseIndex):
-        pass
+        sitting_date = indexes.DateTimeField(model_attr='sitting__start_date')
 
     site.register( hansard_models.Entry, HansardEntryIndex )
