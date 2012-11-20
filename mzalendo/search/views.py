@@ -96,17 +96,29 @@ stopwords = ["'tis", "'t was", "a", "able","about", "across", "after",
             "you'll", "you're", "you've", "your","shall","very"]
 
 # hansard-centric words to ignore
-hansardwords = ["mr", "mrs","minister","speaker", "madam","delete","insert","hon","think","-" ]
+hansardwords = ["mr", "mrs","minister","speaker", "madam","delete","insert","hon","think","committee","-","clause","sub-clause","bill"]
 
-def tagcloud(request,wks=4):
+def latest(n=30):
+    Entry = hansard_models.Entry
+    # filter = dict(start_date=Entry.objects.order_by('-start_date')[0].s)
+    i = max(len(Entry.objects.all()) - n, 0)
+    xs = [obj.id for obj in Entry.objects.all()]
+    xs = xs[-n:]
+    filter = dict(sitting__id__in=xs)
+    return SearchQuerySet().models(Entry).all()
+
+def tagcloud(request,n=30):
     """ Return tag cloud JSON results"""
-    # Build a query based on duration default is 1 month
+    # Build a query based on fetching the last n hansards
     #cutoff = datetime.date.today() - datetime.timedelta(weeks=int(wks))
     #sqs  = SearchQuerySet().models(hansard_models.Entry).filter(sitting_date__gte=cutoff)
     
-    cutoff = SearchQuerySet().models(hansard_models.Entry).latest('sitting_date')
     sqs  = SearchQuerySet().models(hansard_models.Entry).all()#filter(sitting__pk__gte=(int(cutoff.pk)-int(wks)))
+    sqs = latest(n)
+
+
     cloudlist =[]
+    
     try:
         # Generate tag cloud from content of returned entries
         words = {}
