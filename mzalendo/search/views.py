@@ -187,13 +187,13 @@ def latest(n=30):
     filter = dict(sitting__id__in=xs)
     return SearchQuerySet().models(Entry).all()
 
-def tagcloud(request,n=30):
+def tagcloud(request, n=30):
     """ Return tag cloud JSON results"""
     # Build a query based on fetching the last n hansards
     #cutoff = datetime.date.today() - datetime.timedelta(weeks=int(wks))
     #sqs  = SearchQuerySet().models(hansard_models.Entry).filter(sitting_date__gte=cutoff)
     
-    sqs  = SearchQuerySet().models(hansard_models.Entry).all()#filter(sitting__pk__gte=(int(cutoff.pk)-int(wks)))
+    sqs  = SearchQuerySet().models(hansard_models.Entry).all() #filter(sitting__pk__gte=(int(cutoff.pk)-int(wks)))
     sqs = latest(n)
 
 
