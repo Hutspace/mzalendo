@@ -170,7 +170,11 @@ def production():
     env.log_level = 'info'
 
 def staging():
-    pass
+    env.hosts = ['208.68.37.14']
+    env.user = 'eokyere'  #we need a new user for this; root can't ssh
+    env.domain = 'staging.odekro.org'
+    env.log_level = 'debug'
+
 
 def dev():
     """local machine."""
