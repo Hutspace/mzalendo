@@ -9,4 +9,5 @@
 .pydevproject
 build/
 tmp/
+local_fabfile.py
 
