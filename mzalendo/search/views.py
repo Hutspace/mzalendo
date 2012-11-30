@@ -126,7 +126,7 @@ def tagcloud(request, n=30):
     # return results
     return HttpResponse(
         simplejson.dumps(sortedlist),
-        mimetype='appearlication/json'
+        mimetype='application/json'
     )
 
 
