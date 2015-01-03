@@ -1,0 +1,26 @@
+{% extends 'south_africa/election_base.html' %}
+{% load compressed %}
+
+{% block extra_js_to_load %}
+    addExtraJS([ {% compressed_js 'election-countdown' %} null ]);
+{% endblock %}
+
+{% block content %}
+<div class="election-page-header" id="top">
+        <h2>South African General Election 2014</h2>
+        <p class="election-page-subtitle">7 May 2014</p>
+    </div>
+<div class="general-election-information">
+  <p>The 2014 South African general election was held on 7 May 2014, to elect a new National Assembly as well as new provincial legislatures in each province</p>
+</div>
+<div class="election-candidates">
+    <h2>National Election</h2>
+    {% include "south_africa/election/_national.html" %}
+</div>
+<div class="election-candidates">
+    <h2>Provincial Election</h2>
+    {% include "south_africa/election/_provincial.html" %}
+</div>
+{% endblock %}
+
+

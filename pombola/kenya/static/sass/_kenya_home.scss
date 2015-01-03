@@ -1,0 +1,317 @@
+$pull-out-background: #f2f0e7;
+$serif-font-family: Constantia, "Lucida Bright", Lucidabright, "Lucida Serif", Lucida, "DejaVu Serif", "Bitstream Vera Serif", "Liberation Serif", Georgia, serif;
+
+#home-quote,
+#home-cta,
+#home-featured-person,
+#home-blog,
+#home-facebook,
+#home-twitter,
+#home-background {
+  margin: 0 20px 20px 20px;
+}
+
+@media only screen and (min-width: 640px) {
+  #home-quote,
+  #home-cta,
+  #home-featured-person,
+  #home-blog,
+  #home-facebook,
+  #home-twitter,
+  #home-background {
+    margin: 0 0 30px 0;
+  }
+
+  #home-intro,
+  #home-promoted {
+    float: left;
+    clear: left;
+    width: 38%;
+  }
+
+  #home-editorial {
+    float: right;
+    clear: right;
+    width: 56%;
+  }
+
+  #home-background {
+    clear: both;
+  }
+}
+
+#home-quote {
+  background: $pull-out-background;
+
+  img {
+    width: 100%;
+    height: auto;
+  }
+
+  p {
+    padding: 20px;
+    margin: 0;
+    font-family: $serif-font-family;
+    font-weight: bold;
+    font-style: italic;
+    font-size: 18px;
+    line-height: 24px;
+  }
+
+  footer {
+    padding: 0 20px 20px 20px;
+    color: #999;
+    font-size: 14px;
+  }
+}
+
+#home-cta {
+  a {
+    display: block;
+    background: darken($colour_primary_mid, 10%) url(../images/search-50px.png) 15px 50% no-repeat;
+    padding: 15px 10px 15px 80px;
+    color: #fff;
+    @include border-top-left-radius(4px);
+    @include border-top-right-radius(4px);
+    text-align: left;
+    font-size: 16px;
+    line-height: 21px;
+
+    strong {
+      display: block;
+    }
+
+    &:hover, &:focus {
+      text-decoration: none;
+      background-color: darken($colour_primary_mid, 15%);;
+    }
+  }
+
+  a + a {
+    margin-top: 1px;
+    background-color: $colour_primary_mid;
+    background-image: url(../images/hansard-50px.png);
+    @include border-radius(0);
+    @include border-bottom-left-radius(4px);
+    @include border-bottom-right-radius(4px);
+
+    &:hover, &:focus {
+      background-color: darken($colour_primary_mid, 5%);
+    }
+  }
+}
+
+#home-featured-person,
+#home-facebook {
+  background: $pull-out-background;
+  padding: 20px;
+}
+
+#home-facebook {
+  iframe {
+    display: inline;
+    vertical-align: middle;
+    margin-left: 0.5em;
+    width: 150px;
+  }
+}
+
+.featured-person {
+  color: inherit;
+  margin: 0;
+  border: none;
+  background: transparent;
+  overflow: visible;
+
+  img {
+    max-width: 100px;
+  }
+
+  .featured-person-info {
+    position: static;
+    margin-left: 120px;
+    min-height: 0;
+
+    h2 {
+      margin: 0 0 5px 0 !important;
+
+      a {
+        font-size: 18px;
+      }
+    }
+
+    .feature-nav {
+      display: block;
+      margin-left: -5px;
+      float: none;
+
+      a {
+        @include button-reset;
+        display: block;
+        width: 20px;
+        height: 22px;
+        float: left;
+        @include opacity(0.7);
+        font-size: inherit;
+      }
+
+      .feature-prev {
+        background: transparent url(../images/chevron-left-alt.png) center no-repeat;
+        margin-right: 10px;
+
+        &:hover {
+          @include opacity(1);
+        }
+      }
+
+      .feature-next {
+        background: transparent url(../images/chevron-right-alt.png) center no-repeat;
+
+        &:hover {
+          @include opacity(1);
+        }
+      }
+    }
+
+    .feature-person-role {
+      font-style: normal;
+      margin-bottom: 5px;
+    }
+
+    .feature-person-summary {
+      display: block;
+      padding: 0;
+
+      p {
+        font-size: 14px;
+      }
+    }
+
+    .rating-container {
+      position: static;
+
+      .rating {
+        margin: 0 40px 15px 0;
+      }
+
+      .rating-img {
+        bottom: 10px;
+      }
+    }
+  }
+}
+
+ul#home-news-list {
+  @include list-reset-soft;
+  border-top: none;
+  padding-top: 0;
+
+  li {
+    margin-bottom: 0;
+    position: relative;
+    padding: 20px 0 20px 70px;
+
+    &:first-child {
+      margin-top: -10px; /* compensate for margin-bottom on h2 above */
+    }
+
+    h3 {
+      padding: 0;
+      margin: 0 0 5px 0;
+      font-size: 18px;
+      line-height: 21px;
+    }
+
+    p {
+      padding: 0;
+      margin: 0;
+    }
+
+    p.meta {
+      position: absolute;
+      top: 50%;
+      left: 5px;
+      width: 40px;
+      text-align: center;
+      font-family: $serif-font-family;
+      font-style: normal;
+      font-size: inherit;
+      margin-bottom: 0;
+      color: #b5b2a5;
+      margin-top: -2.3em;
+
+      span {
+        display: block;
+
+        &.day {
+          display: none;
+        }
+
+        &.month {
+          text-transform: uppercase;
+        }
+
+        &.date {
+          font-size: 2em;
+          line-height: 0.5em;
+          margin: 0.1em 0 0.3em 0;
+        }
+
+        &.year {
+          font-size: 1.2em;
+          line-height: 1em;
+        }
+      }
+    }
+  }
+}
+
+#home-twitter {
+  display: block;
+  height: 400px;
+  overflow: hidden; /* fixes bug in Opera Mini where twitter widget overflows into footer */
+
+  iframe {
+    height: 400px;
+    width: 100% !important; /* override the javascript-generated width */
+  }
+}
+
+#home-background {
+  padding-top: 30px;
+  border-top: 1px solid $pull-out-background;
+  text-align: center;
+
+  p {
+    font-size: 16px;
+    line-height: 28px;
+  }
+
+  img {
+      margin-bottom: 1em;
+      width: 150px;
+      height: auto;
+  }
+
+  @media only screen and (min-width: 450px) {
+    text-align: left;
+
+    img {
+        float: right;
+        margin-left: 1em;
+    }
+  }
+}
+
+#home-shujaaz {
+  position: absolute;
+  top: -30px;
+  right: 0;
+  z-index: 1;
+
+  @media only screen and (min-width: 640px) {
+    position: fixed;
+    top: 0;
+    z-index: 99999;
+  }
+}

@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% load compressed %}
+{% load staticfiles %}
+
+{% block title %}Home{% endblock %}
+
+{% block extra_js_to_load %}
+    addExtraJS(
+      [
+        {% compressed_js 'feeds' %}
+        {% compressed_js 'countdown' %}
+        null
+      ]
+    );
+{% endblock %}
+
+{% block breadcrumbs %}
+    {# Hide bread crumbs on the home page #}
+{% endblock %}
+
+{% block content %}
+
+<a id="home-shujaaz" href="/shujaaz">
+  <img src="/static/images/mzalendo-awards-ribbon.png" width="234" height="237" alt="Vote for us in the People’s Shujaaz Awards!">
+</a>
+
+<div id="home-intro">
+
+    <div id="home-quote">
+        <img src="{% static 'images/parliament.jpg' %}">
+        <p>All Sovereign power belongs to the people of Kenya and shall be exercised only in accordance with this Constitution</p>
+        <footer>
+            &ndash; <cite>Article 1 (i), Constitution of Kenya August 2010</cite>
+        </footer>
+    </div>
+
+    <div id="home-cta">
+        <a href="{% url "core_search" %}"><strong>Find your Representatives</strong> MPs, Senators, and Women Representatives</a>
+        <a href="{% url "hansard:index" %}"><strong>The Hansard</strong> Read transcripts of what was said in&nbsp;parliament</a>
+    </div>
+
+</div>
+
+<div id="home-editorial">
+
+  {% if settings.BLOG_RSS_FEED %}
+    <div id="home-blog">
+        <h2>Editorial</h2>
+        <ul id="home-news-list" data-blog-rss-feed="{{ settings.BLOG_RSS_FEED }}">
+            <li>
+                Loading news&hellip;
+            </li>
+        </ul>
+    </div>
+  {% endif %}
+
+    <div id="home-facebook">
+        Like us on Facebook
+        <iframe src="//www.facebook.com/plugins/like.php?href=https%3A%2F%2Fwww.facebook.com%2FMzalendoWatch&amp;width&amp;layout=button_count&amp;action=like&amp;show_faces=false&amp;share=false&amp;height=21&amp;appId=212162318805899" scrolling="no" frameborder="0" style="border:none; overflow:hidden; height:21px;" allowTransparency="true"></iframe>
+    </div>
+
+  {% if settings.TWITTER_USERNAME and settings.TWITTER_WIDGET_ID %}
+    <div id="home-twitter">
+        {% include 'twitter_widget.html' %}
+    </div>
+  {% endif %}
+
+</div>
+
+<div id="home-promoted">
+
+  {% if featured_person != None %}
+    <div id="home-featured-person">
+        <h2>Featured Person</h2>
+        {% include 'core/person_feature.html' %}
+    </div>
+  {% endif %}
+
+</div>
+
+<div id="home-background">
+    <img src="/static/images/indigo.gif" width="300" height="172" alt="Indigo">
+    <p>Mzalendo (‘Patriot’ in Swahili) is a non-partisan project started in 2005 whose mission is to “keep an eye on the Kenyan parliament”. Mzalendo seeks to promote a stronger public voice and to enhance public participation in politics by providing relevant information about Parliament specifically about Senators and MPs activities.</p>
+</div>
+
+{% endblock %}

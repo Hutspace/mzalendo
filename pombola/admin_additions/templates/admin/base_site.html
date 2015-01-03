@@ -1,0 +1,60 @@
+{% extends "admin/base.html" %}
+{% load i18n %}
+{% load staticfiles %}
+{% load compressed %}
+
+{% block extrastyle %}
+    <link rel="icon" type="image/png" href="{% static 'images/favicon.png' %}">
+    {% compressed_css 'admin' %}
+{% endblock %}
+
+{% block blockbots %}
+    <meta name="robots" content="NONE,NOARCHIVE" />
+
+    {% comment %}
+        This is in the 'blockbots' block rather than the 'extrahead' block as it
+        must be loaded after the django admin jquery so that there is no
+        confusion about the jqueries that are on the page. Trying to use a
+        super.block in 'extrahead' did not work.
+    {% endcomment %}
+
+    {% comment %}
+      On pages that use the MarkItUpWidget from django-markitup,
+      'jQuery' and '$' at this point will be jQuery v2.0.3,
+      which is loaded by the markdown plugin. That version
+      doesn't work with the autocomplete plugin, however, which
+      needs an earlier version. Django's own jQuery (v1.6.4) is
+      available as django.jQuery, but that version is too old
+      for the AJAX libraries. So, this condition looks to see
+      whether the Javascript for MarkItUp! would have been
+      added, and if not, loads a version of jQuery that it known
+      to work with django-autocomplete-light and
+      django-ajax-selects.
+    {% endcomment %}
+
+    {% if 'markitup' not in media|stringformat:"s" %}
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.js"></script>
+    {% endif %}
+
+    <!-- for the admin autocomplete -->
+    <script type="text/javascript">//<![CDATA[
+    if(!jQuery.ui || (typeof jQuery.ui == 'undefined')) {
+      document.write('<script type="text/javascript"  src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/jquery-ui.min.js"><\/script>');
+      document.write('<link type="text/css" rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/themes/smoothness/jquery-ui.css" />');
+    }
+    //]]>
+    </script>
+
+    {% include 'autocomplete_light/static.html' %}
+
+{% endblock %}
+
+{% block title %}{{ title }} | {% trans 'Pombola site admin' %}{% endblock %}
+
+{% block branding %}
+    <h1 id="site-name">{% trans 'Pombola administration' %}</h1>
+{% endblock %}
+
+{% block nav-global %}
+    {% include 'staging_header.html' %}
+{% endblock %}

@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load thumbnail %}
+{% load switch %}
+{% load hidden %}
+
+{% block title %}{{ object.name }}{% endblock %}
+
+{% block content %}
+
+    <div class="view-selector">
+        <a href="{% url "position_pt" pt_slug=object.slug %}{% if order %}?order={{order|urlencode}}{% endif %}">View as list</a>
+    </div>
+
+    <h1 class="page-title">{{ page_title }}</h1>
+
+    {% if object.summary %}
+        <div class="summary markdown">
+            {{ object.summary }}
+        </div>
+    {% endif %}
+
+
+    <div class="content_box">
+        <h3>Current Position Holders</h3>
+
+        {% for position in positions %}
+            <div class="grid-listing-item">
+                {% maybehidden position.person user %}
+                    {% thumbnail position.person.primary_image "210x210" crop="center" as im %}
+                        <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}"/>
+                    {% empty %}
+                        <img src="{% static 'images/person-210x210.jpg' %}" />
+                    {% endthumbnail %}
+
+                    <span class="name">
+                        {{ position.person.name }}
+                    </span>
+                {% endmaybehidden %}
+            </div>
+        {% endfor %}
+    </div>
+
+    <br clear="both" />
+
+    <br><br>
+
+    <div>
+        For past position holders please <a href="{% url "position_pt" pt_slug=object.slug %}">view as list</a>.
+    </div>
+
+
+
+{% endblock %}
+

@@ -1,0 +1,147 @@
+#!/bin/sh
+
+set -e
+error_msg() { printf "\033[31m%s\033[0m\n" "$*"; }
+notice_msg() { printf "\033[33m%s\033[0m " "$*"; }
+done_msg() { printf "\033[32m%s\033[0m\n" "$*"; }
+DONE_MSG=$(done_msg done)
+
+if [ $# -ne 4 ]
+then
+    cat >&2 <<EOUSAGE
+Usage: $0 <UNIX-USER> <HOST> <INSTALLATION-DIRECTORY> <DEVELOPMENT-INSTALL>
+EOUSAGE
+    exit 1
+fi
+
+UNIX_USER="$1"
+HOST="$2"
+DIRECTORY="$3"
+DEVELOPMENT_INSTALL="$4"
+COUNTRY_APPS="kenya nigeria zimbabwe south_africa"
+
+# Check that the arguments we've been passed are sensible:
+
+IP_ADDRESS_FOR_HOST="$(dig +short $HOST)"
+
+if [ x = x"$IP_ADDRESS_FOR_HOST" ]
+then
+    error_msg "The hostname $HOST didn't resolve to an IP address"
+    exit 1
+fi
+
+if ! id "$UNIX_USER" 2> /dev/null > /dev/null
+then
+    error_msg "The user '$UNIX_USER' didn't exist."
+    exit 1
+fi
+
+if [ "$(whoami)" != "$UNIX_USER" ]
+then
+    error_msg "This script should be run by the user '$UNIX_USER'."
+    exit 1
+fi
+
+REPOSITORY="$DIRECTORY/pombola"
+LINK_DESTINATION="$HOME/pombola"
+
+ln -sfn "$REPOSITORY" $LINK_DESTINATION
+cd "$REPOSITORY"
+
+# Set up a GEM_HOME for site-local installation of compass and other gems:
+echo "Setting up CSS... "
+export GEM_HOME="$DIRECTORY/gems"
+mkdir -p "$GEM_HOME"
+export GEM_PATH=
+export PATH="$GEM_HOME/bin:$PATH"
+
+if ! grep -q 'Set up local gem directory for Pombola' $HOME/.bashrc; then
+    cat >>$HOME/.bashrc <<EOBRC
+
+# Set up local gem directory for Pombola
+export GEM_HOME="$DIRECTORY/gems"
+export GEM_PATH=
+export PATH="\$GEM_HOME/bin:\$PATH"
+EOBRC
+fi
+echo $DONE_MSG
+
+# Write sensible values into the config file, if it doesn't already exist
+if [ ! -f conf/general.yml ]; then
+    echo -n "Setting up conf/general*.yml files and media_root directories... "
+    for COUNTRY_APP in $COUNTRY_APPS
+    do
+        COUNTRY_DASHES="$(echo $COUNTRY_APP | tr _ -)"
+        RANDOM_STRING=$(< /dev/urandom tr -dc A-Za-z0-9 | head -c32)
+        sed -r \
+            -e "s,^( *POMBOLA_DB_HOST:).*,\\1 ''," \
+            -e "s,^( *POMBOLA_DB_NAME:).*,\\1 'pombola-$COUNTRY_DASHES'," \
+            -e "s,^( *POMBOLA_DB_USER:).*,\\1 '$UNIX_USER'," \
+            -e "s,^( *COUNTRY_APP:).*,\\1 '$COUNTRY_APP'," \
+            -e "s,^( *DJANGO_SECRET_KEY:).*,\\1 '$RANDOM_STRING'," \
+            conf/general.yml-example > conf/general-$COUNTRY_DASHES.yml
+        if [ "$COUNTRY_APP" = 'kenya' ]
+        then
+            # We set this up for Kenya by default, so symlink the
+            # general.yml file to the general-kenya.yml:
+            ln -s general-kenya.yml conf/general.yml
+            # Make the media_root, and point the media_root.kenya
+            # symlink at it:
+            mkdir -p "$DIRECTORY/media_root"
+            ln -sfn media_root "$DIRECTORY/media_root.kenya"
+        else
+            # Make that country's media_root directory:
+            mkdir -p "$DIRECTORY/media_root.$COUNTRY_DASHES"
+        fi
+    done
+    echo $DONE_MSG
+fi
+
+# Create the databases if they don't exist:
+echo -n "Setting up databases... "
+for COUNTRY_APP in $COUNTRY_APPS
+do
+    COUNTRY_DASHES="$(echo $COUNTRY_APP | tr _ -)"
+    DB_NAME="pombola-$COUNTRY_DASHES"
+    if ! psql -l | egrep "^ *$DB_NAME *\|" > /dev/null
+    then
+        createdb -T template_postgis --owner "$UNIX_USER" "$DB_NAME"
+    else
+        notice_msg already
+    fi
+done
+echo $DONE_MSG
+
+echo "Installing any needed python packages, migrating db, setting up static content..."
+cd "$REPOSITORY"
+bin/prepare_environment.bash
+echo $DONE_MSG
+
+# We'll need to activate the virtualenv in this environment to run
+# syncdb and migrate:
+. "$DIRECTORY/pombola-virtualenv/bin/activate"
+
+# The syncdb and database migrations will have been run for Kenya
+# (since the general.yml points there) but not for the other
+# countries.  Run them for each country database:
+for COUNTRY_APP in $COUNTRY_APPS
+do
+    if [ "$COUNTRY_APP" != keyna ]
+    then
+        COUNTRY_DASHES="$(echo $COUNTRY_APP | tr _ -)"
+        bin/switch-country.py "$COUNTRY_DASHES"
+        ./manage.py syncdb --noinput
+        ./manage.py migrate
+    fi
+done
+# ... and finally switch back to Kenya:
+bin/switch-country.py kenya
+
+# Set up virtualenv activation on login
+if ! grep -q 'Set up virtualenv activation for Pombola' $HOME/.bashrc; then
+    cat >>$HOME/.bashrc <<EOBRC
+
+# Set up virtualenv activation for Pombola
+source "$DIRECTORY/pombola-virtualenv/bin/activate"
+EOBRC
+fi

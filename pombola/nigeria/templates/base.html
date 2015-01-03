@@ -1,0 +1,8 @@
+{% extends "default_base.html" %}
+{% load compressed %}
+
+{% block title_suffix %} :: ShineYourEye {% endblock %}
+
+{% block css_headers %}
+    {% compressed_css 'nigeria' %}
+{% endblock %}

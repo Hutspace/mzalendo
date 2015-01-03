@@ -9,14 +9,16 @@ libapache2-mod-wsgi
 # Database - we use postgres with the postgis addons
 postgresql
 postgis
+postgresql-9.1-postgis | postgresql-8.4-postgis
+libpq-dev
 
 # For mapit
-libgdal1-1.6.0 | libgdal1-1.5.0
+libgdal1-1.6.0 | libgdal1-1.5.0 | libgdal1
 python-gdal
 
-# Search Index - Xapian http://xapian.org/
-libxapian22
-
+# Search (elasticsearch is not in stock debian, note)
+openjdk-7-jre-headless | openjdk-6-jre-headless
+elasticsearch
 
 # Python - the language that the site is written in, and additional tools needed
 # to build the virtualenv - may already be included with your python install
@@ -24,14 +26,16 @@ python-dev
 python-pip
 python-virtualenv
 
-
 # Various miscellaneous tools - needed for the python libraries to be built.
-bcrypt
+libxml2-dev
+libxslt1-dev
+libjpeg-dev
 
 # libjpeg - needed on non-debian. On debian installed as a requirement for others so no need to list seperately
 
-
-
+# Install yui-compressor, which django-pipeline will need to do CSS
+# and Javascript minification
+yui-compressor
 
 ############################################################
 # The following can be installed by Python's pip into the virtual environment.
@@ -43,9 +47,7 @@ mercurial
 
 # May as well use the Debian maintained versions.
 python-docutils
-python-bcrypt
 python-markdown
-python-xapian
 python-yaml
 python-openid
 python-beautifulsoup
@@ -53,3 +55,6 @@ python-dateutil
 
 # For hansard parsing - need pdftohtml
 poppler-utils
+
+# For ZA hansard parsing
+antiword

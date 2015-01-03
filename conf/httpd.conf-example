@@ -1,6 +1,6 @@
 # Apache configuration.
 #
-# Copyright (c) 20010 UK Citizens Online Democracy. All rights reserved.
+# Copyright (c) 2010 UK Citizens Online Democracy. All rights reserved.
 # WWW: http://www.mysociety.org
 
 # This kind of thing would be needed if we wanted a password.
@@ -8,7 +8,7 @@
 # <Location />
 #     AuthType Basic
 #     AuthName "Private beta I'm afraid."
-#     AuthUserFile mzalendo-htpasswd
+#     AuthUserFile pombola-htpasswd
 #     Require valid-user
 #     Order deny,allow
 #     Deny from all
@@ -23,23 +23,44 @@
 
 ErrorDocument 401 /static/errors/401.html
 
-Alias /media_root /data/vhost/example.mzalendo.mysociety.org/media_root
-Alias /static /data/vhost/example.mzalendo.mysociety.org/collected_static
-Alias /robots.txt /data/vhost/example.mzalendo.mysociety.org/docs/robots.txt
-Alias /googlee8d580ff44c6001c.html /data/vhost/example.mzalendo.mysociety.org/docs/googlee8d580ff44c6001c.html
-Alias /favicon.ico /data/vhost/example.mzalendo.mysociety.org/docs/favicon.ico
+Alias /media_root /data/vhost/example.pombola.mysociety.org/media_root
+Alias /mapit/static /data/vhost/example.pombola.mysociety.org/collected_static
+Alias /static /data/vhost/example.pombola.mysociety.org/collected_static
+Alias /googlee8d580ff44c6001c.html /data/vhost/example.pombola.mysociety.org/docs/googlee8d580ff44c6001c.html
+Alias /favicon.ico /data/vhost/example.pombola.mysociety.org/docs/favicon.ico
 
-WSGIDaemonProcess example.mzalendo.mysociety.org \
+WSGIDaemonProcess example.pombola.mysociety.org \
     user=exampleuser \
     group=examplegroup \
     processes=5 \
     threads=1 \
-    display-name=example.mzalendo.mysociety.org \
-    python-path=/data/vhost/example.mzalendo.mysociety.org/mzalendo-virtualenv/lib/python2.6/site-packages
+    display-name=example.pombola.mysociety.org \
+    python-path=/data/vhost/example.pombola.mysociety.org/pombola-virtualenv/lib/python2.6/site-packages
     
-WSGIProcessGroup example.mzalendo.mysociety.org
+WSGIProcessGroup example.pombola.mysociety.org
 
-WSGIScriptAlias / /data/vhost/example.mzalendo.mysociety.org/mzalendo/wsgi/django.wsgi
+WSGIScriptAlias / /data/vhost/example.pombola.mysociety.org/pombola/pombola/wsgi.py
+
+
+# Performance things - all css and js should either have a version number in
+# their filename, or a version number as a query parameter. So we can safely
+# have a longer expiry.
+ExpiresActive On
+ExpiresByType text/css               "access plus 1 week"
+ExpiresByType application/javascript "access plus 1 week"
+
+# Images don't have the query parameter that updates when they change, so don't
+# cache for as long.
+ExpiresByType image/png              "access plus 1 hour"
+ExpiresByType image/jpeg             "access plus 1 hour"
+
+# Gzip these file suffixes
+AddOutputFilter DEFLATE js css svg ttf
+
+<Location /static/js/>
+    # Prevent proxies changing the javascript
+    Header append Cache-Control "no-transform"
+</Location>
 
 
 

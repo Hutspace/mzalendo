@@ -1,0 +1,94 @@
+{% extends 'core/place_base.html' %}
+{% load thumbnail %}
+{% load humanize %}
+
+{% block title %}{{ object.name }}{% endblock %}
+
+{% block subcontent %}
+
+
+  {% if object.summary %}
+  <h2>Summary</h2>
+
+    <div class="markdown">
+     {{ object.summary }}
+    </div>
+  {% endif %}
+
+  {% if object.has_scorecards %}
+    <h2>Scorecards</h2>
+
+    <p>
+      The past performance of {{ object.name }} can be seen in its
+      <a href="{% url "place_scorecard" slug=object.slug %}">scorecard</a>.
+    </p>
+  {% endif %}
+
+
+  <h2>Current Politicians Representing {{ object.name }}</h2>
+
+    <ul class="listing">
+        {% for person_and_position in related_people %}
+            {% with person=person_and_position.0 positions=person_and_position.1 %}
+                {% include "core/_place_people_position.html" %}
+            {% endwith %}
+        {% endfor %}
+    </ul>
+
+  {% for parent_place in object.parent_places %}
+    {% with people_and_positions=parent_place.related_people %}
+      {% if people_and_positions %}
+        <h3>Current Politicians representing <a href="{% url 'place' slug=parent_place.slug %}">{{ parent_place }}</a></h3>
+        <ul class="listing">
+          {% for person_and_position in people_and_positions %}
+            {% with person=person_and_position.0 positions=person_and_position.1 %}
+              {% include "core/_place_people_position.html" %}
+            {% endwith %}
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+  {% endfor %}
+
+  <h2>People</h2>
+
+  <p>
+    To see all people associated with {{ object.name }} and
+    smaller regions, go to the
+    <a href="{% url "place_people" slug=object.slug %}">people
+    page for {{ object.name }}</a>.
+  </p>
+
+
+  {% if settings.ENABLED_FEATURES.place_data and object.placedata %}
+    <h2>Data</h2>
+    <p>
+      There is some
+      <a href="{% url "place_data" slug=object.slug %}">data</a>
+      on {{ object.name }}.
+    </p>
+  {% endif %}
+
+
+  {% if settings.ENABLED_FEATURES.projects and object.is_constituency %}
+    {% with project_count=object.project_set.count %}
+      <h2>CDF Projects</h2>
+
+      <p>
+        We have information on
+        <a href="{% url "place_projects" slug=object.slug %}">
+          {{ project_count}} CDF Projects
+        </a>
+        in {{ object.name }}.
+      </p>
+    {% endwith %}
+  {% endif %}
+
+  {% block disqus_comments %}
+    {% if settings.COUNTRY_APP != 'kenya' %}
+      {# Kenyan comments are looked after by pombola/kenya/templates/core/object_base.html #}
+      {% include 'disqus_comments.html' %}
+    {% endif %}
+  {% endblock %}
+
+{% endblock %}

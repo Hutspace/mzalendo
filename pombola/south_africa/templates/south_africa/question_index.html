@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% load compressed %}
+
+{% block extra_js_to_load %}
+    addExtraJS([ {% compressed_js 'hide-reveal' %} null ]);
+{% endblock %}
+
+{% block title %}Hansard{% endblock %}
+
+
+{% block content %}
+
+{% for entry in entries %}
+    <div>
+        <a class="hansard-section-title has-dropdown-dark"
+            href="{% url 'speeches:section-view' entry.get_path %}">
+            <h2> {{ entry.title }} ({{ entry.speech_count }}) </h2>
+        </a>
+    </div>
+{% endfor %}
+{% endblock %}

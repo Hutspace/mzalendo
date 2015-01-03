@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% load compressed %}
+
+{% block breadcrumbs %}
+{% include 'core/override_breadcrumb.html' with override_path='/places/' %}
+{% endblock %}
+
+{% block content %}
+
+
+  <h1>Find your representatives</h1>
+  <a href="{% url "info_page" slug="constituency-offices" %}" class="button secondary-button about-constituency-office">About Constituency Offices</a>
+
+  <form action="{% url "core_geocoder_search" %}">
+    {% include "south_africa/_search_box.html" %}
+    <p>
+        E.g.
+        <a href="{% url "core_geocoder_search" %}?q=Long+Street">Long Street</a>,
+        <a href="{% url "core_geocoder_search" %}?q=Cape+Town">Cape Town</a>,
+        <a href="{% url "core_geocoder_search" %}?q=Soweto">Soweto</a>
+
+    </p>
+  </form>
+
+  {% compressed_js 'google-map' %}
+
+  <div id="map_canvas" style="width: 100%; height: 400px;"></div>
+
+  <div class="rep-results-warning">Due to the 2014 elections,
+  the representative information may no longer be accurate.
+  Please bear with us while we try to obtain the updated
+  information.</div>
+
+  <div>
+
+    {% block subcontent %}
+    {% endblock %}
+
+  </div>
+{% endblock %}

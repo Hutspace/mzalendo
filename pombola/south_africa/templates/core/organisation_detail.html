@@ -1,0 +1,119 @@
+{% extends 'core/organisation_base.html' %}
+{% load thumbnail %}
+{% load switch %}
+{% load compressed %}
+
+{% block title %}{{ object.name }}{% endblock %}
+
+{# Remove the object_menu #}
+{% block object_menu_links %}
+{% endblock object_menu_links %}
+
+{% block subcontent %}
+
+  {% if object.summary %}
+    <h2>Summary</h2>
+
+    <div class="markdown">
+      {{ object.summary }}
+    </div>
+  {% endif %}
+
+  <h2>People</h2>
+
+  {% if object.kind.slug == 'constituency-office' or object.kind.slug == 'constituency-area' %}
+
+    <div class="rep-results-warning">Due to the 2014 elections, the
+    representative information may no longer be accurate. Please bear with
+    us while we try to obtain the updated information.</div>
+
+    {% include "south_africa/_position_listing_constituency.html" with positions=positions %}
+    {% include 'disqus_comments.html' %}
+  {% else %}
+    {% include "core/_position_listing.html" with positions=positions %}
+  {% endif %}
+
+{% endblock %}
+
+{# Put a map in the profile_pic block #}
+{% block profile_pic %}
+
+  {% thumbnail object.primary_image "210x210" crop="center" as im %}
+    <div class="profile-pic">
+      <img src="{{ im.url }}" alt="{{ object.name }}" width="{{ im.width }}" height="{{ im.height }}" />
+    </div>
+  {% empty %}
+  {% endthumbnail %}
+
+{% with place=object.place_set.all.0 %}
+  {% if place.location %}
+    {% compressed_js 'google-map' %}
+    <div class="profile-map">
+      <div id="map_canvas"></div>
+
+      {% block add_place_kml_to_map %}
+      <script type="text/javascript" charset="utf-8">
+        add_marker_to_map({
+          lat: {{ place.location.y }},
+          lng: {{ place.location.x }},
+          name: "{{place.organisation.name }}"
+        });
+      </script>
+      {% endblock %}
+
+    </div>
+  {% endif %}
+{% endwith %}
+
+{% endblock profile_pic %}
+
+{% block profile_info %}
+
+  {% if object.contacts.count %}
+
+  <div class="sidebar">
+    <ul class="vcard">
+      {% for c in object.contacts.all %}
+      <li class="{{ c.kind.slug }}">
+
+      {% switch c.kind.slug %}
+
+      {% case 'phone' %}
+      <span class="label">Telephone</span>
+      <p><a href="tel:{{ c.value }}">{{ c.value }}</a></p>
+
+      {% case 'facebook' %}
+      <span class="label">Facebook</span>
+      <p><a href="{{ c.value }}">{{ c.kind.name }}</a></p>
+
+      {% case 'twitter' %}
+      <span class="label">Twitter</span>
+      <p><a href="http://twitter.com/{{ c.value }}">@{{ c.value }}</a> on Twitter</p>
+
+      {% case 'address' %}
+      <span class="label">Post</span>
+      <p>{{ c.value|urlizetrunc:50 }}</p>
+
+      {% case 'parliament_url' %}
+      {# Suppress these as requested in issue #444 #}
+
+      {% else %}
+      <span class="label">{{ c.kind.name }}</span>
+      <p>{{ c.value|urlizetrunc:50 }}</p>
+
+      {% endswitch %}
+
+      {% if c.notes %}<small>({{ c.notes }})</small>{% endif %}
+
+      </li>
+      {% endfor %}
+    </ul>
+    {% if object.kind.slug == 'constituency-office' %}
+      <div class="constituency-office-feedback">
+        <p>Give feedback on your visit to your constituency office. Take a photo of your office and send it to <a href="mailto:contact@pa.org.za">contact@pa.org.za</a>.</p>
+      </div>
+    {% endif %}
+  </div>
+
+  {% endif %}
+{% endblock profile_info %}

@@ -1,0 +1,150 @@
+{% comment %}
+
+    Menu entries - for both desktop and mobile.
+
+    We use the same menu structure twice - once in the header and once in the
+    footer. However the footer does not require the drill down so there is a way
+    to specifically request it. This is all here in a separate file so that we
+    won't forget to keep the two in sync when doing edits.
+
+{% endcomment %}
+
+
+<li><a href="{% url "home" %}">Home</a></li>
+<li class="has-submenu"><a href="{% url "info_page" slug='democracy-resources' %}">Democracy Resources</a>
+    {% if include_sub_menu_entries %}
+    <ul id="democracy-resources">
+        <li>
+            <a href="{% url "info_page" slug='citizens-rights' %}">Citizens Rights &amp; Responsibilities</a>
+        </li>
+        <li>
+            <a href="{% url "info_page" slug='how-democracy-works' %}">How Our Democracy Works</a>
+        </li>
+        <li>
+            <a href="{% url "info_page" slug='democracy-faq' %}">Democracy FAQs</a>
+        </li>
+        <li>
+            <a href="{% url "info_page" slug='ministry-overview' %}">Ministry Overview</a>
+        </li>
+        <li>
+            <a href="{% url "info_page" slug='constitution-2010' %}">Constitution 2010</a>
+        </li>
+        <li>
+            <a href="{% url "info_page" slug='election-legislation' %}">Election Legislation</a>
+        </li>
+        <li>
+            <a href="{% url "info_page" slug='democracy-documents' %}">Democracy Documents</a>
+        </li>
+    </ul>
+    {% endif %}
+</li>
+
+
+<li class="has-submenu">
+  <a href="{% url "position_pt" pt_slug='member-national-assembly' %}">NA Members</a>
+  {% if include_sub_menu_entries %}
+  <ul id="parliament-overview">
+    <li><a href="{% url "organisation_kind" slug='party' %}">Political Parties</a></li>
+    <li><a href="{% url "organisation_kind" slug='coalition' %}">Coalitions</a></li>
+  </ul>
+  {% endif %}
+</li>
+
+<li>
+  <a href="{% url "position_pt" pt_slug='senator' %}">Senators</a>
+</li>
+
+<li class="has-submenu"><a href="{% url "info_page" slug='parliament-overview' %}">Parliament</a>
+    {% if include_sub_menu_entries %}
+    <ul id="parliament-overview">
+        <li>
+            <a href="{% url "info_page" slug='parliament-overview' %}">Parliament Overview</a>
+        </li>
+        <li>
+            <a href="{% url "info_page" slug='committee-overview' %}">Committee Overview</a>
+        </li>
+        <li>
+            <a href="{% url "info_page" slug='bills-overview' %}">Bills Overview</a>
+        </li>
+
+        {% if settings.ENABLED_FEATURES.hansard %}
+            <li>
+                <a href="{% url "hansard:index" %}">Hansard</a>
+            </li>
+        {% endif %}
+
+        <li>
+            <a href="{% url "info_page" slug='political-parties' %}">Political Parties</a>
+        </li>
+    </ul>
+    {% endif %}
+</li>
+
+<li class="has-submenu"><a href="{% url "info_page" slug='public-participation' %}">Public Participation</a>
+    {% if include_sub_menu_entries %}
+    <ul id="places-overview">
+      <li>
+        <a href="{% url "info_page" slug='citizens-rights' %}">Rights and Responsibilities</a>
+      </li>
+      <li>
+        <a href="{% url "info_page" slug='forum' %}">Forum</a>
+      </li>
+      <li>
+        <a href="{% url "info_page" slug='polls' %}">Polls</a>
+      </li>
+    </ul>
+    {% endif %}
+</li>
+
+<li class="has-submenu"><a href="{% url "info_page" slug='news' %}">News</a>
+    {% if include_sub_menu_entries %}
+    <ul id="news-overview">
+        <li>
+          <a href="http://mzalendo.com/blog/">Blog</a>
+        </li>
+        <li>
+            <a href="{% url "info_page" slug='press' %}">Press</a>
+        </li>
+        <li>
+            <a href="{% url "info_page" slug='infographics' %}">Infographics</a>
+        </li>
+        <li>
+            <a href="{% url "info_page" slug='data' %}">Data</a>
+        </li>
+        <li>
+            <a href="{% url "info_page" slug='newsletter' %}">Newsletter</a>
+        </li>
+    </ul>
+    {% endif %}
+</li>
+
+<li class="has-submenu"><a href="{% url "info_page" slug='mzalendo-overview' %}">About</a>
+    {% if include_sub_menu_entries %}
+    <ul id="mzalendo-overview">
+        <li>
+            <a href="{% url "info_page" slug='mzalendo-overview' %}">Mzalendo Overview</a>
+        </li>
+        <li>
+            <a href="{% url "info_page" slug='site-faq' %}">Site FAQs</a>
+        </li>
+        <li>
+            <a href="{% url "info_page" slug='policies' %}">Policies</a>
+        </li>
+        <li>
+            <a href="{% url "info_page" slug='founders' %}">Founders</a>
+        </li>
+        <li>
+            <a href="{% url "info_page" slug='management' %}">Management</a>
+        </li>
+        <li>
+            <a href="{% url "info_page" slug='partners' %}">Partners</a>
+        </li>
+        <li>
+            <a href="{% url "info_page" slug='scorecard-faq' %}">Scorecard FAQs</a>
+        </li>
+        <li>
+            <a href="{% url "info_page" slug='contact' %}">Contact</a>
+        </li>
+    </ul>
+    {% endif %}
+</li>

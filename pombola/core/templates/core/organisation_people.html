@@ -1,0 +1,57 @@
+{% extends 'core/organisation_base.html' %}
+{% load staticfiles %}
+{% load thumbnail %}
+{% load humanize %}
+{% load hidden %}
+
+{% block title %}{{ object.name }} People{% endblock %}
+
+{% block subcontent %}
+
+  <h2>Related People</h2>
+
+  {% if historic %}
+    <p>Showing historic positions (switch to <a href="?historic=">current positions</a>).</p>
+  {% else %}
+    <p>Showing current positions (switch to <a href="?historic=1">past positions</a>).</p>
+  {% endif %}
+
+  <div>
+
+    <ul class="listing">
+        {% for position in sorted_positions %}
+            {% with person=position.person person_url=position.person.get_absolute_url %}
+                <li>
+                    {% maybehidden person user %}
+                        {% thumbnail person.primary_image "90x90" as im %}
+                        <img src="{{ im.url }}" alt="{{ person.name }}" width="{{ im.width }}" height="{{ im.height }}" />
+                        {% empty %}
+                        <img src="{% static 'images/person-90x90.jpg' %}" />
+                        {% endthumbnail %}
+                    {% endmaybehidden %}
+
+                    <section>
+                        <h4>{% maybehidden person user %}{{ person.name }}{% endmaybehidden %}</h4>
+                        <p>
+                          {{ position.title.name }}
+                        </p>
+
+                        {% if position.place %}
+                          <p>
+                            <a href="{{ position.place.get_absolute_url }}">{{ position.place.name }}</a>
+                          </p>
+                        {% endif %}
+
+                        </p>
+                        <p class="meta">{{ position.display_dates|safe }}</p>
+                        {% if not person.hidden %}
+                          <div class="read-more-wrap"><a href="{{ person_url }}" class="read-more">read more</a></div>
+                        {% endif %}
+                    </section>
+                </li>
+            {% endwith %}
+        {% endfor %}
+    </ul>
+  </div>
+
+{% endblock %}

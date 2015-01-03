@@ -1,0 +1,20 @@
+{% if settings.DISQUS_SHORTNAME %}
+    <h2>Comments</h2>
+
+
+    {# This relies on the higher up templates including disqus_javascript #}
+    <script type="text/javascript" charset="utf-8">
+      addDisqusScriptTag('embed');
+    </script>
+
+    <div>
+        <div class="disqus_help">
+          (For <strong>newest</strong> comments first please choose 'Newest' from the 'Discussion' tab below.)
+        </div>
+        <div id="disqus_thread"></div>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    </div>
+{% else %}
+  Comments have not been enabled on this site. See 'DISQUS_SHORTNAME' in your settings.
+{% endif %}

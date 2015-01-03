@@ -1,0 +1,46 @@
+notifications:
+  email: false
+  irc:
+    channels:
+      - "irc.mysociety.org#pmo"
+    use_notice: true
+
+language: python
+
+env:
+  - MODULES="Django>=1.6,<1.7"
+
+services:
+  - elasticsearch
+
+install:
+  - sudo rm /etc/apt/sources.list.d/pgdg-source.list
+  - sudo rm /etc/apt/sources.list.d/ubuntugis-stable-source.list
+  - sudo apt-get update -qq
+  # The following steps are taken from MapIt's travis.yml, to make
+  # sure that the system python-gdal is used - installing it with pip
+  # will fail due to build errors.
+  - sudo apt-get install python-gdal gdal-bin binutils yui-compressor
+  - gem install --no-ri --no-rdoc compass -v 0.12.7
+  - ln -s /usr/lib/python2.7/dist-packages/osgeo ~/virtualenv/python2.7/lib/python2.7/site-packages/
+  - ln -s /usr/lib/python2.7/dist-packages/GDAL-1.7.3.egg-info ~/virtualenv/python2.7/lib/python2.7/site-packages/
+  # Install the environment-specific Python packages:
+  - pip install $MODULES --use-mirrors
+  # Now install the rest of the required Python packages:
+  - CFLAGS="-O0" pip install -r requirements.txt --use-mirrors
+  # Create a basic general.yml file:
+  - sed -r
+    -e "s,(POMBOLA_DB_USER:) 'sayit',\\1 'postgres',"
+    -e "s,(POMBOLA_DB_NAME:) '',\\1 'pombola',"
+    -e "s,(DJANGO_SECRET_KEY:) '',\\1 'notatallsecret',"
+    conf/general.yml-example > conf/general.yml
+
+before_script:
+  - createdb -U postgres pombola
+  - psql -c 'CREATE EXTENSION postgis;' -U postgres -d pombola
+  - ./manage.py syncdb --noinput
+  - ./manage.py migrate --noinput
+  - ./manage.py collectstatic --noinput
+
+script:
+  - ./run-tests
