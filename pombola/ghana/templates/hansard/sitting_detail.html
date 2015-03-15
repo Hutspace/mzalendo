@@ -5,6 +5,9 @@
 
 {% block extra_scripts %}
 <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.truncate.js"></script>
+
+{% load compressed %}
+{% compressed_js 'hansard-extra' %}
 <script type="text/javascript">
     $(function() {
         $('.truncate').truncate({charLength: 50, perOT: true, fx: "easeOutBounce"})
@@ -57,11 +60,11 @@
                         {# <br />Statements By Members #}
                         </p>
                         <span>{{ entry.sitting.start_date }} / {{ he.time }}</span>
-                        
+
                         {% with entry.speaker.parties.0 as party %}
                         {% if party %}
                         <strong>
-                            <a class="patytag" 
+                            <a class="patytag"
                                href="{{ party.get_absolute_url }}">
                                {{ party.name }}
                            </a>
@@ -69,15 +72,15 @@
                         {% endif %}
                         {% endwith %}
                     </div>
-                    
+
 
                     <div class="focus">
                         {% thumbnail entry.speaker.primary_image "200x200" as img %}
-                            <a class="hansardAvatar" 
+                            <a class="hansardAvatar"
                                href="{{ he.get_absolute_url }}">
                                <img src="{{ img.url }}" />
                             </a>
-                        {% empty %}                          
+                        {% empty %}
                         {% endthumbnail %}
                         <p class="speaker">
                             <a href="{{ entry.speaker.get_absolute_url }}">
@@ -91,7 +94,7 @@
                             {{ entry.content|linebreaksbr }}
                         </p>
                     </div>
-                </li> 
+                </li>
                 {% case 'heading' %}
                     {% if entry.content %}
                     <li>
@@ -110,7 +113,7 @@
                     </li>
             {% endswitch %}
 
-            {% endwith %}       
+            {% endwith %}
         {% endfor %}
     {% endif %}
     </ul>

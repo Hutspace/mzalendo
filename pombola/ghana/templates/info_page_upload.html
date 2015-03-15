@@ -8,11 +8,11 @@
       Import Data
     {% endif %}
   </h1>
-  
+
   {% if done %}
     <p>Done :)</p>
   {% else %}
-    <form enctype="multipart/form-data" method="post" 
+    <form enctype="multipart/form-data" method="post"
           action="{% url info_page_upload %}">
       {% csrf_token %}
       {{ form }}

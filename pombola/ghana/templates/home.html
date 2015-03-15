@@ -10,9 +10,13 @@
 
   <script type="text/javascript" src="{{ STATIC_URL }}js/jqcloud-1.0.2.min.js"></script>
   <link rel="stylesheet" type="text/css"  href="{{ STATIC_URL }}css/jqcloud.css" />
+  {% load compressed %}
+  {% compressed_js 'home' %}
+  {% compressed_css 'home' %}
+
   <script type = "text/javascript">
     $(function() {
-        $.getJSON("search/tagcloud/", 
+        $.getJSON("search/tagcloud/",
         {},
         function(data){
             $("#wordcloud").jQCloud(data, {width: 525, height:345, shape: "rectangular"});
@@ -23,26 +27,26 @@
     <!-- add news ticker functionality -->
    <script type='text/javascript'>
    $(function(){
-       $.get('{{ STATIC_URL }}news.html', 
+       $.get('{{ STATIC_URL }}news.html',
              function(data) {
-              $('#ticker').html(data);   
+              $('#ticker').html(data);
              });
    });
-    
+
     function tick(){
         try{
             $('#ticker li:first')
-              .animate({'opacity':0}, 200, 
-              function () 
+              .animate({'opacity':0}, 200,
+              function ()
                  { $(this).appendTo($('#ticker')).css('opacity', 1); });
              } catch(err) {/*ignore*/}
     }
-    
-    $(function() { 
+
+    $(function() {
         setInterval(tick, 10000);
      });
     </script>
-    
+
   <script type="text/javascript" src="{{ STATIC_URL }}js/countdown.js"></script>
   <script type="text/javascript">
         function diff(end, start) {
@@ -70,16 +74,16 @@
         });
   </script>
 
-  <script type="text/javascript">     
-      $(function() { 
-          $('#personFeatures').jshowoff({ 
+  <script type="text/javascript">
+      $(function() {
+          $('#personFeatures').jshowoff({
              links: false,
              controls: false,
              effect: 'fade',
              cssClass: 'personFeatures',
              hoverPause: false,
              speed: 20000
-         }) 
+         })
       })
   </script>
 
@@ -87,7 +91,7 @@
       $(function() {
         try{
         $('#slider1').s3Slider({
-              timeOut: 5000 
+              timeOut: 5000
           })
           }catch(err) { /* slider1 does not exist - so ignore */ }
       })

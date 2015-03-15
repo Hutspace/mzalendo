@@ -6,10 +6,9 @@ import os
 from optparse import make_option
 
 from django.core.management.base import BaseCommand, CommandError
-from odekro.management.hansard_parser import normalised_lines, scan, \
+from pombola.ghana.management.hansard_parser import normalised_lines, scan, \
                                              parse_head, meta
-
-# from odekro import data
+# from pombola.ghana import data
 
 class Command(BaseCommand):
     """Rename hansard text files based on header information"""
@@ -29,7 +28,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         if not len(args):
             raise CommandError
-        
+
         src = args[0]
 
         if not os.path.exists(src)
@@ -47,7 +46,7 @@ class Command(BaseCommand):
                 name = self.filename(src)
             if not ext:
                 ext = src[-4:]
-            
+
             dst = os.path.join(os.path.dirname(src), '%s%s' % (name, ext))
             if verbose:
                 print dst
@@ -57,7 +56,7 @@ class Command(BaseCommand):
     def filename(self, src):
         content = open(src, 'rU').read()
         lines = scan(meta(normalised_lines(content)), header=True)
-        
+
         try:
             head = parse_head(lines)
             return 'debate-%(series)02d-%(volume)03d-%(number)03d-%(date)s' % head

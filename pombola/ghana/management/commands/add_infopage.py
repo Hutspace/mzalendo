@@ -1,4 +1,4 @@
-import re 
+import re
 import csv
 import sys
 
@@ -7,7 +7,7 @@ import os
 from optparse import make_option
 
 from django.core.management.base import BaseCommand, CommandError
-from odekro import data
+from pombola.ghana import data
 
 
 class Command(BaseCommand):
@@ -20,11 +20,11 @@ class Command(BaseCommand):
         # file = open(args[])
         if len(args) < 2 or len(args) > 3:
             raise CommandError
-        
+
         path = args[0]
         content = open(path, 'r').read()
         title = args[1]
-        
+
         if len(args) == 3:
             slug = args[2]
         else:

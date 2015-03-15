@@ -2,9 +2,8 @@ import os
 
 from django.core.management.base import BaseCommand, CommandError
 
-from odekro.management.hansard_parser import parse
-from odekro.management.hansard_parser import parse
-from odekro import data
+from pombola.ghana.management.hansard_parser import parse
+from pombola.ghana import data
 
 
 
@@ -18,7 +17,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         if len(args) != 1:
             raise CommandError
-        
+
         for src in args:
             if not os.path.exists(src):
                 sys.exit(1)
@@ -68,7 +67,7 @@ class Command(BaseCommand):
 
     def validate_entry(self, entry):
         return entry.get('time', None) and True
-        
+
 
     # def validate_speech(self, speech):
     #            True
