@@ -1,9 +1,3 @@
-<<<<<<< HEAD
-
-=======
-#!/usr/bin/env python
->>>>>>> 3c18153c306aee39fe6c668bc19e1a68e53c3cd9
-
 import os
 import sys
 import time
@@ -109,7 +103,8 @@ def add_mp(obj):
                                    organisation=parliament,
                                    place=constituency,
                                    start_date=term_start,
-                                   end_date=term_end)
+                                   end_date=term_end,
+                                   category=str('political'))
 
     mp, _ = MP.objects.get_or_create(person=person,
                                   party_position=party_position,
@@ -178,7 +173,7 @@ def add_info_page(slug, title, content):
         page = InfoPage(slug=slug)
 
     page.title = title
-    page.content = unicode(content, 'utf-8')
+    page.markdown_content = unicode(content, 'utf-8')
     return page.save()
 
 

@@ -64,7 +64,7 @@ COUNTRY_CSS = {
     'home': {
         'source_filenames': (
             'css/jqcloud.css',
-        )
+        ),
         'output_filename': 'css/home.css',
     },
 }
