@@ -1,4 +1,5 @@
 import os
+import traceback
 
 from django.core.management.base import BaseCommand, CommandError
 
@@ -32,16 +33,16 @@ class Command(BaseCommand):
         try:
             head, entries = parse(open(src, 'rU').read())
             if self.validate_header(head):
+                print head
                 if self.validate_entries(entries):
                     print '%s is OK' % src
                 else:
                     print 'Bad entry found in: %s' % src
             else:
                 print 'Bad header found in: %s' % src
-                print head
         except Exception, e:
             print 'Error validating hansard: %s' % src
-            print e
+            traceback.print_exc()
 
     def validate_header(self, head):
         return head.get('series', None) and \
@@ -52,8 +53,10 @@ class Command(BaseCommand):
 
     def validate_entries(self, entries):
         entry = None
+        print '%s Entries found'%len(entries)
         while len(entries):
             entry = entries.pop(0)
+            print entry
             if entry['kind'] == 'chair':
                 break
 
