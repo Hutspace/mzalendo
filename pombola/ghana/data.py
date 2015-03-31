@@ -23,13 +23,14 @@ from pombola.hansard.models import Venue, Source, Sitting, Entry
 from models  import MP, HansardEntry
 from utils import split_name, convert_date, legal_name
 
-KINDS = ((PlaceKind, 'constituency'),
+KINDS = ((PlaceKind, 'region'),
+         (PlaceKind, 'constituency'),
          (PositionTitle, 'mp'),
          (PositionTitle, 'member'),
          (OrganisationKind, 'party'),
          (OrganisationKind, 'national'))
 
-constituency_kind, mp_job_title, member_job_title, party_kind, national = \
+region_kind, constituency_kind, mp_job_title, member_job_title, party_kind, national = \
     [clz.objects.get_or_create(slug=s, defaults=dict(name=s.title()))[0] for clz, s in KINDS]
     #[clz.objects.get_or_create(name=s.title(), slug=s)[0] for clz, s in KINDS]
 parliament, _ = Organisation.objects.get_or_create(name='Ghana Parliament',
@@ -78,14 +79,18 @@ def add_mp(obj):
                         gender=gender, title=title, dob=dob,
                         image=image, summary=summary)
 
-    print constituency, slugify(constituency),constituency_kind
+    print constituency, slugify(constituency),constituency_kind, region, slugify(region), region_kind
+    region, _ = Place.objects.get_or_create(slug=slugify(region),
+                                            defaults={'name': region,
+                                                      'kind': region_kind})
+
     constituency, _ = Place.objects.get_or_create(slug=slugify(constituency),
                                                   defaults={'name':constituency,
                                                             'kind':constituency_kind})
 
     party, _ = Organisation.objects.get_or_create(slug=slugify(party),
-                                                  defaults={'name':party,
-                                                            'kind':party_kind})
+                                                      defaults={'name':party,
+                                                                'kind':party_kind})
 
     # add to party
     party_position, _ = Position.objects.get_or_create(person=person,
