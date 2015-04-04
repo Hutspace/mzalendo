@@ -114,7 +114,11 @@ LOGIN_ERROR_URL    = '/accounts/login/?social_error=1'
 #HAYSTACK_SEARCH_ENGINE = 'xapian'
 #HAYSTACK_XAPIAN_PATH   = os.path.join( root_dir, "mzalendo_xapian" )
 
-if config.get('EMAIL_SETTINGS', None):
+# load the mySociety config
+config_file = os.path.join( base_dir, 'conf', 'general.yml' )
+config = yaml.load( open(config_file, 'r') )
+
+if settings.get('EMAIL_SETTINGS', None):
     EMAIL_HOST = config.get('EMAIL_HOST', '')
     EMAIL_HOST_USER = config.get('EMAIL_HOST_USER', '')
     EMAIL_HOST_PASSWORD = config.get('EMAIL_HOST_PASSWORD', '')
