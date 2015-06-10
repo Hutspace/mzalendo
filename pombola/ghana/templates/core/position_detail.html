@@ -11,17 +11,7 @@
 {% endblock %}
 
 {% block extra_scripts %}
-    {% ifequal object.name|lower 'mp' %}
-    <script type="text/javascript" src="{{ STATIC_URL }}js/easypaginate.js"></script>
 
-    <script type="text/javascript">
-    jQuery(function($){
-    $('ul.position-list').easyPaginate({
-            step:25
-        });
-    });
-    </script>
-    {% endifequal %}
 {% endblock %}
 
 {% block content %}
