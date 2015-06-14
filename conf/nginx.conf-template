@@ -3,12 +3,6 @@
 server {
     listen 80;
     server_name %(base_domain)s;
-    return 301 http://%(domain)s$request_uri;
-}
-
-server {
-    listen 80;
-    server_name www.%(domain)s;
     root %(project_home)s;
 
 #   Serve directly - analogous for static/staticfiles
