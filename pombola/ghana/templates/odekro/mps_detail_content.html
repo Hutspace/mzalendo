@@ -12,18 +12,17 @@
     <div class="text-center row search-filters">
         <form method="get">
             <span><i class="fa fa-globe"> Where: </i><span>
-            <select class="selectpicker"  data-style="btn-sm btn-default" name="place_slug">
-                <option value="">All</option>
+            <select name="place_slug">
+                <option value="All">All</option>
                 {% for place in places  %}
                     <option
                         {% if place_slug = place.slug %}selected="selected"{% endif %}
-                        value="{{ place.slug }}"
-                    >{{ place.name }} ({{ place.kind.name }})
-                </option>
+                        value="{{ place.slug }}">{{ place.name }} ({{ place.kind.name }})
+                    </option>
                 {% endfor %}
             </select>
 
-            <input class="btn btn-sm  btn-default" type="submit" value="Search" />
+            <input class="btn btn-xs  btn-default" type="submit" value="Search" />
         </form>
     </div>
 

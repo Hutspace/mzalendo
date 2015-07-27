@@ -28,6 +28,14 @@
 /* End carousel */
 
 
+.img , .img-thumbnail
+{
+    -webkit-border: 0px !important;
+    -moz-border: 0px !important;
+    border: 0px !important;
+}
+
+
 
 /**
   MEDIA QUERIES
