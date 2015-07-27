@@ -52,3 +52,9 @@
 }
 
 .no-underline{text-decoration: none !important}
+.navbar-brand {
+    border: none;
+}
+.navbar-toggle {
+    vertical-align: middle;
+}
