@@ -51,9 +51,9 @@
             {% endblock %}
         </div>
 
-        {% comment %}
-        {% include 'analytics.html' %}
-        {% endcomment %}
+        {% if not settings.STAGING %}
+         {% include 'analytics.html' %}
+        {% endif %}
 
         <div class="row">
        {% block footer %}

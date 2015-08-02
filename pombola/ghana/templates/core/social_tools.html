@@ -1,23 +1,41 @@
-<ul class="nav nav-pills tools">
-  <li>
-    <a  href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}&amp;t={{ object.name }}"
-        target="_blank"
-        class="label label-primary muted-text big-btn-text-fb"><i class="fa fa-facebook"> Share on Facebook</i></a>
-
-
-    <li>
-      <a  href="https://twitter.com/share?via={{ settings.TWITTER_USERNAME }}&amp;text={{ object.name }}&amp;url={{ request.build_absolute_uri }}"
-          target="_blank"
-          class="label label-info muted-text big-btn-text-tw"
-      ><i class="fa fa-twitter">Share on Twitter</i></a>
-    </li>
-
-  <li class="pull-right">
+<span class="btn-group  btn-group-justified tools">
+    <div class="btn-group">
+    <a class="btn btn-success dropdown-toggle" data-toggle="dropdown">
+        <i class="fa fa-share-alt"> Share</i>
+         <span class="caret"></span>
+     </a>
+    <ul class="dropdown-menu">
+        <li>
+            <a  href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}&amp;t={{ object.name }}"
+            target="_blank" title="Share on Facebook"
+            class="btn btn-facebook muted-text">
+            <i class="fa fa-facebook"><span class="hidden-xs"> Facebook</span></i>
+            </a>
+        </li>
+        <li>
+            <a  href="https://twitter.com/share?via={{ settings.TWITTER_USERNAME }}&amp;text={{ object.name }}&amp;url={{ request.build_absolute_uri }}"
+              target="_blank" title="Share on Twitter"
+              class="btn btn-twitter muted-text big-btn-text-tw">
+              <i class="fa fa-twitter"><span class="hidden-xs">Twitter</span></i>
+            </a>
+        </li>
+        <li>
+            <a  href="https://plus.google.com/share?url={{ request.build_absolute_uri }}"
+              target="_blank" title="Share on Twitter"
+              class="btn btn-googleplus muted-text big-btn-text-tw">
+              <i class="fa fa-google"><span class="hidden-xs"> Google+</span></i>
+          </a>
+        </li>
+    </ul>
+  </div>
     <a  href="{% url "feedback_add" %}?url={{ request.build_absolute_uri }}"
-        class="label label-default muted-text feedback_link big-btn-text-red"
-    >Correct this info</a>
-  </li>
+        title="Correct this info"
+        class="btn btn-email muted-text feedback_link big-btn-text-red">
+        <i class="fa fa-edit"><span class="hidden-xs"> Feedback</span></i>
+    </a>
 
+
+  {% comment %}
   {% if settings.DISQUS_SHORTNAME %}
     <li>
       <a  href="{% url "person" slug=object.slug %}#disqus_thread"
@@ -25,5 +43,6 @@
       >Post Comment</a>
     </li>
   {% endif %}
+  {% endcomment %}
 
-</ul>
+</span>

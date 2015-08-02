@@ -26,6 +26,7 @@
                     <script type="text/javascript" charset="utf-8">
                         add_kml_to_map( 'http://{{ request.META.HTTP_HOST }}{% url mapit_index %}area/{{ object.mapit_area.id }}.kml?simplify_tolerance=0.001' );
                     </script>
+                    {% include 'core/social_tools.html' %}
                 </div>
             {% else %}
                 <div class="col-xs-12 col-md-4">
@@ -34,14 +35,11 @@
                     {% empty %}
                     <img class="img-thumbnail img-circle img-responsive" src="{{STATIC_URL}}images/place-200x200.jpg" />
                     {% endthumbnail %}
+                    {% include 'core/social_tools.html' %}
                 </div>
             {% endif %}
 
             <div class="col-xs-12 col-md-8">
-                <div class="social-and-tools pull-right">
-                    {% include 'core/social_tools.html' %}
-                </div>
-
                 <div class="panel small-container">
                     {% include 'scorecards/scorecard.html' %}
                 </div>
@@ -65,8 +63,8 @@
                     {% endif %}
                     {% endwith %}
                 </div>
-            </div>
-        </div>
+           </div>
+           </div
     </div>
 </div>
 {% comment %}

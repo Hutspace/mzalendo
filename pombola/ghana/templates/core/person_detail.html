@@ -35,7 +35,7 @@
         <hr>
         </div>
         <div class="col-lg-8 col-lg-offset-2">
-            <h4>Biography <small class="pull-right"> {% include 'core/social_tools.html' %}</small></h4>
+            <h4>Biography</h4>
             {% with object.mp_set.all.0 as mp %}
             <ul class="list-group">
                 <li class="list-group-item"><h4>Hometown <small>{{ mp.hometown | default:'not available' }}</small></h4></li>
@@ -45,6 +45,7 @@
                 <li class="list-group-item"><h4>Education <small>{{ mp.education | default:'not available' }}</small></h4></li>
             </ul>
             {% endwith %}
+        {% include 'core/social_tools.html' %}
         </div>
 
 
