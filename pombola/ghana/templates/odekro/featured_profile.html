@@ -1,9 +1,9 @@
 {% load thumbnail %}
 
 {% with featured_person as p %}
-      <div class="panel panel-default">
+      <div class="panel panel-default" style="height: 475px;">
         <h3 class="panel-heading">Featured Profile</h3>
-        <div class="panel-body" style="height: 425px;">
+        <div class="panel-body">
             <div class="col-xs-12 text-center">
                 {% thumbnail p.primary_image "200x200" as img %}
                     <img class="center-block img-thumbnail img-circle img-responsive" src="{{ img.url }}" alt="{{ p.name }}" width="{{ img.width }}" height="{{ img.height }}" >
@@ -49,13 +49,12 @@
               <h4 class="muted-text">
                 <a href="{{ p.get_absolute_url }}" class="label label-info"><span class="fa fa-user"> View Profile</span></a>
               </h4>
-            </div>
+           </div>
             <!--/col-->
             <div class="clearfix"></div>
           </div>
           <!--/row-->
-        </div>
-        <!--/panel-body-->
+
       </div>
       <!--/panel-->
 

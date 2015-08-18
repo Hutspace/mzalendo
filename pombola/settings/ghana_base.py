@@ -91,5 +91,8 @@ LOGIN_ERROR_URL    = '/accounts/login/?social_error=1'
 #     # 'social_auth.backends.pipeline.user.update_user_details',
 #     'user_profile.pipeline.update_user_details',
 # )
-TWITTER_ACCOUNT_NAME = "odekro"
-FACEBOOK_ACCOUNT_NAME = "odekro"
+TWITTER_USERNAME = 'odekro'
+TWITTER_WIDGET_ID= '276374165869707264'
+
+FACEBOOK_ACCOUNT = 'odekro'
+FACEBOOK_APP_ID ='238865732910248'

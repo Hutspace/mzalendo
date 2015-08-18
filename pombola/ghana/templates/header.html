@@ -1,8 +1,5 @@
 
 <div class="masthead">
-    <br><br>
-    <div class="logo col-lg-12 hidden-xs"><img src="{{ STATIC_URL }}images/logo.png"></img></div>
-    <br><br>
 
     <nav class="navbar navbar-default col-lg-12">
              <div class="navbar-header">
@@ -38,9 +35,9 @@
                       <ul class="nav navbar-nav navbar-right">
                         <form class="navbar-form" role="search" method="get" action="{% url 'core_search' %}">
                         <div class="input-group">
-                            <input type="text" class="form-control input-xs pull-right" style="background-color: #e5e5e5;" placeholder="Search..." onblur="this.value=!this.value?'Search...':this.value;" onfocus="this.select()" onclick="this.value='';" onkeyup="buttonUp();" >
+                            <input type="text" name="q" class="form-control input-xs pull-right" style="background-color: #e5e5e5;" placeholder="Search..." onblur="this.value=!this.value?'Search...':this.value;" onfocus="this.select()" onclick="this.value='';" onkeyup="buttonUp();" >
                             <span class="input-group-btn">
-                                <button type="submit" class="btn btn-xsbtn-default">
+                                <button type="button" class="btn ">
                                     <span class="fa fa-search">
                                         <span class="sr-only">Search</span>
                                     </span>

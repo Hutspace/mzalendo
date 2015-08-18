@@ -26,14 +26,14 @@ def aggregate_articles():
         for article in f['entries']:
             if focused or 'parliament' in article.title.lower() or 'parliament' in article.description.lower():
                 if feed_length > 0:
-                    feedhtml += '<div class="item">'
+                    feedhtml += '<article class="item white-panel">'
                 else:
-                    feedhtml += '<div class="item active">'
-                feedhtml += '<h3 class="muted-text"><a href="{0}">{1}</a></h3>'.format(article.link.encode('utf-8','ignore'), article.title.encode('utf-8','ignore'))
+                    feedhtml += '<article class="item white-panel active">'
+                feedhtml += '<h4 class="muted-text"><a href="{0}">{1}</a></h4>'.format(article.link.encode('utf-8','ignore'), article.title.encode('utf-8','ignore'))
                 pubdate = dateutil.parser.parse(article.published.encode('utf-8','ignore')).date().strftime('%a %B %d, %Y')
                 feedhtml += '<span><a class="label label-primary" href="http://{0}">{0}</a> &nbsp;&nbsp;<span  class="label label-default">{1}</span></span>'.format(feed['source'],pubdate)
-                feedhtml += '<div>{0}...<a href="{1}">view article</a></div>'.format(article.description.encode('utf-8','ignore'), article.link.encode('utf-8','ignore'))
-                feedhtml += '</div>\n'
+                feedhtml += '<p>{0}...<a href="{1}">view article</a></p>'.format(article.description.encode('utf-8','ignore'), article.link.encode('utf-8','ignore'))
+                feedhtml += '</article>\n'
                 feed_length += 1
     return feedhtml
 

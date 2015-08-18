@@ -34,17 +34,17 @@
 {% endblock %}
 </head>
 
-<body role="document" style="min-height:100%;position:relative;background:url({{ STATIC_URL }}images/featimg_bg.jpg) no-repeat center top;-webkit-background-size:contain;-moz-background-size:contain;-o-background-size:contain;background-size:contain;">
+<body role="document" style="">
 
-    <div class="container" id="dekro-container">
-      {% block pre_header %}
-      {% endblock %}
-
-
-        {% block header %}
-            {% include 'header.html' %}
+    <div class="logo container hidden-xs">
+        <img width="35%" height="35%" src="{{ STATIC_URL }}images/odekro-logo-lg.png"></img>
+    </div>
+    <div class="container" id="odekro-container">
+        {% block pre_header %}
         {% endblock %}
-
+        {% block header %}
+                {% include 'header.html' %}
+        {% endblock %}
 
         <div class="row">
             {% block content %}
@@ -59,7 +59,8 @@
        {% block footer %}
          {% include 'footer.html' %}
        {% endblock %}
-   </div>
+        </div>
     </div>
+
 </body>
 </html>

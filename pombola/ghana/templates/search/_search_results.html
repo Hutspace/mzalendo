@@ -1,0 +1,17 @@
+
+<ul class="listing">
+{% if page.object_list %}
+    {% autopaginate page.object_list 25 %}
+{% endif %}
+{% for result in page.object_list %}
+    {% include 'search/search_results_item.html' with object=result.object %}
+{% empty %}
+    <li>There were no results for "<strong>{{ query }}</strong>" - please try a different search.</li>
+{% endfor %}
+</ul>
+
+{% if page_obj.paginator.num_pages > 1 %}
+    <div class="text-center">
+        {% bootstrap_paginate page_obj range=10 show_prev_next="true" show_first_last="true" %}
+    </div>
+{% endif %}
