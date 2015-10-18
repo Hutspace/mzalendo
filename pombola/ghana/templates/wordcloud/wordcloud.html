@@ -1,0 +1,10 @@
+  <div class="text-center" id="wordcloud"></div>
+  <script type = "text/javascript">
+    $(function() {
+        $.getJSON("wordcloud/wordcloud/",
+        {},
+        function(data){
+            $("#wordcloud").jQCloud(data, {autoResize: true, height:400});
+        });
+      });
+  </script>
