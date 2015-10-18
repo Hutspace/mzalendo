@@ -74,6 +74,13 @@ def configure_postgis(password=None):
             _run(cmd, password)
           except: pass
 
+def secure_postgres(password=None):
+    if password is None:
+        print 'Secure password needed for this operation'
+        return
+    change_password('postgres', password)
+
+
 def create_user(name, password, groups=None, encrypted=True):
     """
     Create a PostgreSQL user.
@@ -158,7 +165,7 @@ def postgis_version(ver=None):
         ver = postgres_version()
     else:
         ver = str(ver)
-    contrib = '/usr/share/postgresql/%s/contrib' % ver[:3]
+    contrib = '/usr/share/postgresql/%s/contrib' % ver
     out = qrun('find %s -iname "postgis-*"' % contrib)
     return out.replace('%s/postgis-' % contrib, '')
 

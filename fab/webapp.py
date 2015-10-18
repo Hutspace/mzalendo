@@ -61,6 +61,7 @@ def install(db=None, dbuser=None, dbpasswd=None):
     require('project')
     require('pip_requirements')
 
+
     _install_requirements()
 
     _configure_gunicorn()
@@ -79,6 +80,7 @@ def init():
     with cd('%(basedir)s/releases/current' % env):
          with prefix('PATH=%(basedir)s/bin/:/usr/bin:/usr/local/bin:/bin' % env):
             _sudo('python manage.py syncdb --noinput --verbosity=1')
+            _sudo('python manage.py migrate --fake --verbosity=1')
             _sudo('python manage.py migrate --verbosity=1')
             _sudo('python manage.py collectstatic --noinput')
 
@@ -211,8 +213,13 @@ def _install_requirements():
 
     with cd('%(basedir)s' % env):
         _sudo('source ./bin/activate')
-        _sudo(('./bin/pip install -r '
-               './releases/%(version)s/%(pip_requirements)s') % env)
+        #important env vars for gdal build
+        #_sudo('export CPLUS_INCLUDE_PATH=/usr/include/gdal')
+        #_sudo('export C_INCLUDE_PATH=/usr/include/gdal')
+        #gdal_pip_version = sudo('gdal-config --version')
+       # _sudo('export CPLUS_INCLUDE_PATH=/usr/include/gdal; export C_INCLUDE_PATH=/usr/include/gdal; ./bin/pip install pygdal==1.9.0')
+        #_sudo(('CFLAGS="$(gdal-config --cflags)" CPLUS_INCLUDE_PATH=/usr/include/gdal C_INCLUDE_PATH=/usr/include/gdal ./bin/pip install -r ./releases/%(version)s/%(pip_requirements)s') % env)
+        _sudo(('./bin/pip install -r ./releases/%(version)s/%(pip_requirements)s') % env)
 
 
 def _install_pil():
@@ -237,13 +244,15 @@ def _install_gdal():
 
     packages = (
         # 'postgresql-9.1-postgis',
-        'libgdal1',
-        'libgdal1-dev',
+        'libgdal',
+        'libgdal-dev',
         'build-essential',
         'python-dev'
     )
     sudo('aptitude install -y %s' % ' '.join(packages))
     sudo('ldconfig')
+    sudo('export CPLUS_INCLUDE_PATH=/usr/include/gdal')
+    sudo('export C_INCLUDE_PATH=/usr/include/gdal')
 
     with cd('%(basedir)s' % env):
         _sudo('source ./bin/activate')
@@ -259,6 +268,9 @@ def _install_gdal():
                        ' --libraries=%(libraries)s') % locals())
         except: pass
         _sudo('./bin/pip install --no-download GDAL')
+
+        #gdal_pip_version = sudo('gdal-config --version')
+        #_sudo('./bin/pip install pygdal==%s'%gdal_pip_version)
 
 def _gdal_pip_version():
     version = sudo('gdal-config --version')[:3]
