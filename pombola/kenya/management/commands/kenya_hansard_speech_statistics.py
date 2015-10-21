@@ -1,10 +1,7 @@
 from collections import defaultdict
 import csv
-import datetime
 from dateutil import parser
 from optparse import make_option
-import re
-import sys
 
 from django.core.management.base import BaseCommand, CommandError
 from django.db.models import Count
@@ -30,7 +27,11 @@ class Command(BaseCommand):
 
     help = 'Output statistics on speeches from Hansard for a date range'
 
-    def position_data(self, speaker, date):
+    def position_data(self, speaker, date, cached_position_data):
+
+        cache_key = (speaker, date)
+        if cache_key in cached_position_data:
+            return cached_position_data[cache_key]
 
         results = {
             'county_associated': [],
@@ -88,10 +89,14 @@ class Command(BaseCommand):
             else:
                 results[k] = ('', '') if k == 'county_associated' else ''
 
+        cached_position_data[cache_key] = results
+
         return results
 
 
     def handle(self, **options):
+        position_data_cache = {}
+
         if not options['date_from']:
             raise CommandError("You must specify --date-from")
         if not options['date_to']:
@@ -101,6 +106,8 @@ class Command(BaseCommand):
 
         date_difference = date_to - date_from
         date_midpoint = date_from + (date_difference / 2)
+
+        print "Generating all-speakers.csv"
 
         with open('all-speakers.csv', 'w') as fp:
             writer = csv.writer(fp)
@@ -127,7 +134,7 @@ class Command(BaseCommand):
                 # Look for political positions occupied mid-way through
                 # the date range:
 
-                position_results = self.position_data(speaker, date_midpoint)
+                position_results = self.position_data(speaker, date_midpoint, position_data_cache)
 
                 writer.writerow([speaker.legal_name,
                                  speaker.gender,
@@ -141,6 +148,8 @@ class Command(BaseCommand):
 
             vslug = venue.slug
 
+            print "Generating data for " + vslug
+
             all_speaker_entries = Entry.objects. \
                 filter(sitting__start_date__gte=date_from,
                        sitting__start_date__lte=date_to,
@@ -153,6 +162,8 @@ class Command(BaseCommand):
 
             # The gender split is easy to find, so do that first:
 
+            print "  Writing gender data for " + vslug
+
             gender_counts = {
                 'Male': all_speaker_entries.filter(speaker__gender='male').count(),
                 'Female': all_speaker_entries.filter(speaker__gender='female').count(),
@@ -160,6 +171,8 @@ class Command(BaseCommand):
             }
 
             self.write_csv(vslug + '-gender.csv', gender_counts)
+
+            print "  Writing county, party and coalition data for " + vslug
 
             # These dictionaries are for storing the position-based results:
             county_associated = defaultdict(int)
@@ -169,7 +182,7 @@ class Command(BaseCommand):
             for e in all_speaker_entries:
                 sitting_date = e.sitting.start_date
                 speaker = e.speaker
-                positions = self.position_data(speaker, e.sitting.start_date)
+                positions = self.position_data(speaker, sitting_date, position_data_cache)
                 party_counts[positions['party_membership']] += 1
                 coalition_counts[positions['coalition_membership']] += 1
                 county_associated[positions['county_associated']] += 1
@@ -183,6 +196,43 @@ class Command(BaseCommand):
                 writer = csv.writer(fp)
                 for t, v in county_associated.items():
                     writer.writerow([t[0], t[1], str(v)])
+
+            if vslug == 'national_assembly':
+
+                print "  Writing women representative data"
+
+                with open(vslug + '-women-representatives.csv', 'w') as fp:
+                    writer = csv.writer(fp)
+                    writer.writerow(['Name',
+                                     'Gender',
+                                     'Position',
+                                     'County',
+                                     'Party',
+                                     'Coalition',
+                                     'Appearances'])
+
+                    all_women_representative_speaker_entries = \
+                        all_speaker_entries.filter(
+                            speaker__position__title__name='Member of the National Assembly',
+                            speaker__position__subtitle__regex="omen.*epresentative",
+                        )
+
+                    for d in all_women_representative_speaker_entries. \
+                        values('speaker'). \
+                        annotate(Count('speaker')). \
+                        order_by('speaker'):
+                        speaker = Person.objects.get(pk=d['speaker'])
+                        speeches = d['speaker__count']
+
+                        position_results = self.position_data(speaker, date_midpoint, position_data_cache)
+
+                        writer.writerow([speaker.legal_name,
+                                         speaker.gender,
+                                         position_results['county_associated'][0],
+                                         position_results['county_associated'][1],
+                                         position_results['party_membership'],
+                                         position_results['coalition_membership'],
+                                         speeches])
 
     def write_csv(self, filename, dictionary):
         with open(filename, 'w') as fp:

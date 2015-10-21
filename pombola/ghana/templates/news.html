@@ -1,0 +1,25 @@
+
+<script>
+// When the DOM is ready, run this function
+$(document).ready(function() {
+  //Set the carousel options
+  $('#news-carousel').carousel({
+    pause: true,
+    interval: 5000,
+});
+});
+</script>
+<div class="panel panel-default">
+<h3 class="panel-heading">Parliament in the News</h3>
+<div class="carousel slide"  data-ride='news-carousel' id='news-carousel' style="overflow:hidden;">
+  <div class="carousel-inner">
+    {% include 'news-items.html' %}
+  </div>
+
+  <!-- Carousel Buttons Next/Prev -->
+  <a data-slide="prev" href="#news-carousel" class="left carousel-control"><i class="fa fa-chevron-left"></i></a>
+  <a data-slide="next" href="#news-carousel" class="right carousel-control"><i class="fa fa-chevron-right"></i></a>
+</div>
+
+</div>
+

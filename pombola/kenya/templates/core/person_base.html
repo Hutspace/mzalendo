@@ -32,7 +32,14 @@
 
 {% block profile_info %}
 
-  <div class="constituency-party">
+  {% if shujaaz_finalist %}
+  <div class="object-sidebar__box awards">
+    <h3>People’s Shujaaz Awards</h3>
+    <p><a href="{% url 'shujaaz-finalists' %}#nominees">Finalist: {{ shujaaz_finalist.category }}</a></p>
+  </div>
+  {% endif %}
+
+  <div class="object-sidebar__box constituency-party">
 
       {% if object.aspirant_constituencies.count %}
           <h3>Aspirant for</h3>
@@ -64,7 +71,7 @@
   </div>
 
   {% if object.name != object.legal_name or object.contacts.count %}
-  <div class="contact-details">
+  <div class="object-sidebar__box contact-details">
       {% if object.name != object.legal_name %}
           <h3>Full name</h3>
           <p>{{ object.legal_name }}</p>

@@ -1,0 +1,52 @@
+
+<div class="masthead">
+
+    <nav class="navbar navbar-default col-lg-12">
+             <div class="navbar-header">
+                      <span class="navbar-brand navbar-toggle collapsed pull-left" data-toggle="collapse" href="#"><img height="75%" src="{{ STATIC_URL }}images/logo.png"></img></span>
+                      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse" aria-expanded="false" aria-controls="navbar">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                      </button>
+              </div>
+              <div id="navbar" class="navbar-collapse collapse">
+                      <ul class="nav navbar-nav">
+                        <li><a href="{% url 'home' %}">Home</a></li>
+                        <li><a href="{% url 'hansard:index' %}">Hansard</a></li>
+                        <li><a href="{% url 'position_pt' pt_slug='mp' %}">MPs</a></li>
+                        <li><a href="{% url 'place_kind' slug='constituency' %}">Constituencies</a></li>
+                        <li><a href="http://blog.odekro.org">Blog</a></li>
+                        <li class="dropdown">
+                              <a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                                About
+                                <span class="caret"></span>
+                              </a>
+                              <ul class="dropdown-menu" role="menu">
+                                <li><a href="{% url 'info_page' slug='odekro-overview' %}">Odekro</a></li>
+                                <li><a href="{% url 'info_page' slug='faqs' %}">FAQs</a></li>
+                                <li><a href="{% url 'info_page' slug='policies' %}">Policies</a></li>
+                                <li><a href="{% url 'info_page' slug='partners' %}">Partners</a></li>
+                              </ul>
+                        </li>
+                      </ul>
+
+                      <ul class="nav navbar-nav navbar-right">
+                        <form class="navbar-form" role="search" method="get" action="{% url 'core_search' %}">
+                        <div class="input-group">
+                            <input type="text" name="q" class="form-control input-xs pull-right" style="background-color: #e5e5e5;" placeholder="Search..." onblur="this.value=!this.value?'Search...':this.value;" onfocus="this.select()" onclick="this.value='';" onkeyup="buttonUp();" >
+                            <span class="input-group-btn">
+                                <button type="button" class="btn ">
+                                    <span class="fa fa-search">
+                                        <span class="sr-only">Search</span>
+                                    </span>
+                                </button>
+                            </span>
+                        </div>
+                </form>
+                      </ul>
+              </div><!--/.nav-collapse -->
+
+    </nav>
+</div>
