@@ -1,7 +1,6 @@
 from fabric.api import *
 from fabric.contrib.files import exists
 import os
-import sys
 
 import random
 
@@ -381,11 +380,12 @@ def _configure_gunicorn(user=None, group=None):
     _sed2(configs, dest)
     _sudo('chmod +x %(dest)s' % locals())
 
-    #try to make gunicorn log dir
+    # try to make gunicorn log dir
     try:
-      _sudo('mkdir /var/log/gunicorn')
-      _sudo('chown -R %(webapp_user)s:%(webapp_group)s /var/log/gunicorn' % env)
-    except: pass
+      sudo('mkdir /var/log/gunicorn')
+      sudo('chown -R %(webapp_user)s:%(webapp_group)s /var/log/gunicorn' % env)
+    except:
+      pass
 
 def _configure_supervisor():
     """Configure the supervisord script"""
