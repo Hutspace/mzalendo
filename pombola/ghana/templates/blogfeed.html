@@ -1,0 +1,48 @@
+
+<script type="text/javascript">
+  ghost.init({
+    clientId: "ghost-frontend",
+    clientSecret: "{{ ghost.SECRET }}"
+  });
+  function onSuccess(data) {
+    var $result = $('#blog-posts');
+    var $nav = $('#blog-posts-nav');
+    $.each(data.posts, function (i, post) {
+      var item_active = (i === 0) ? 'active' : '';
+      $result.append(
+        '<div class="item ' + item_active + '">' +
+          '<h3 class="blog-post-title" style="margin-top: 2px;">' +
+            '<a style="text-decoration: none;" href="{{ ghost.URL }}' + post.url +'" target="_blank">' + post.title  + '</a>' +
+          '</h3>' +
+          '<div id="blogpost' + i +'">' +
+          '<p style="overflow: hidden;">' + $(post.html).text().substring(0, 910).replace(/^(.{900}[^\s]*).*/, "$1")  +' ... </p>' +
+          '<h4><a href="{{ ghost.URL }}' + post.url +'" target="_blank" class="label label-primary">Read full article</a></h4>' +
+          '</div>' +
+        '</div>'
+    );
+    $nav.append(
+        '<li data-target="#blog-carousel" data-slide-to="'+ i +'" class="' + item_active + '"></li>'
+    );
+  });
+  $('#blog-carousel').carousel({
+    pause: true,
+    interval: 15000,
+  });
+}
+jQuery(document).ready(function () {
+  $.get(
+    ghost.url.api('posts', {limit: 5})
+  ).done(onSuccess);
+});
+</script>
+
+<div id="home-blog">
+    <div class="container">
+      <div style="min-height: 350px; max-height: 350px;" id="blog-carousel" class="carousel slide" data-ride="blog-carousel">
+        <ol id="blog-posts-nav" class="carousel-indicators"></ol>
+        <div id="blog-posts" class="carousel-inner"></div>
+      </div>
+      <hr class="text-center">
+      <h4 class="text-muted"><i class="fa fa-newspaper-o"></i><a href="{% url 'info_page' slug='6thparliamentgh'%}" > Odekro's Report on the 6th Parliament of Ghana</a></h4>
+    </div>
+</div>

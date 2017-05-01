@@ -15,7 +15,7 @@ OPTIONAL_APPS = (
     'pombola.projects',
     'pombola.place_data',
     'pombola.votematch',
-    'pombola.wordcloud',
+    # 'pombola.wordcloud',
 
     # Pombola has now dropped registration, so leave these out:
     # 'registration_defaults',
@@ -100,3 +100,6 @@ TWITTER_WIDGET_ID= '276374165869707264'
 
 FACEBOOK_ACCOUNT = 'odekro'
 FACEBOOK_APP_ID ='238865732910248'
+
+GHOST_BLOG_FEED = 'http://blog.odekro.org'
+GHOST_BLOG_SECRET = '1d03e6843fac'

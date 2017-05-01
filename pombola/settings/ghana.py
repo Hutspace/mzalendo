@@ -31,4 +31,6 @@ PIPELINE_CSS.update(COUNTRY_CSS)
 PIPELINE_JS.update(COUNTRY_JS)
 
 #need this for funky reversematch error in prod
-DEBUG_TOOLBAR_PATCH_SETTINGS=False
+DEBUG_TOOLBAR_PATCH_SETTINGS = False
+
+TEMPLATE_CONTEXT_PROCESSORS += ('pombola.ghana.context_processors.add_ghost', )

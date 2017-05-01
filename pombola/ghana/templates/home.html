@@ -4,6 +4,7 @@
 {% block title_suffix %}| Odekro{% endblock title_suffix %}
 
 {% block extra_scripts %}
+
     <div id="fb-root"></div>
     <script>(function(d, s, id) {
       var js, fjs = d.getElementsByTagName(s)[0];
@@ -12,30 +13,53 @@
       js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.4&appId={{settings.FACEBOOK_APP_ID}}";
       fjs.parentNode.insertBefore(js, fjs);
     }(document, 'script', 'facebook-jssdk'));</script>
-    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
+    </script>
+   <script type="text/javascript" src="{{ ghost.URL }}/shared/ghost-url.min.js"></script>
 {% endblock extra_scripts %}
 
-{% block extra_styles %}
 
+{% block extra_styles %}
+<style>
+    /* The indicators */
+.carousel-indicators {
+	right: 50%;
+	top: auto;
+	bottom: -25px;
+	margin-right: -19px;
+}
+/* The colour of the indicators */
+.carousel-indicators li {
+	background: #cecece;
+}
+.carousel-indicators .active {
+background: #428bca;
+}
+</style>
 {% endblock extra_styles %}
 
 
 {% block content %}
 <div class="container col-xs-12 col-sm-8 ">
-    <div class="jumbotron">
-        <h3 class="text-muted">What is Odekro?</h3>
+    <div class="jumbotron" style="max-height: 475px;">
+         {% if ghost.URL %}
+          {% include 'blogfeed.html' %}
+         {% else %}
+              <h3 class="text-muted">What is Odekro?</h3>
 
-          <p>In the Akan chieftaincy hierarchy, the Odekro is the lowest sub-divisional chief responsible for ruling  a town and making sure the citizens are taken care of.</p>
+              <p>In the Akan chieftaincy hierarchy, the Odekro is the lowest sub-divisional chief responsible for ruling  a town and making sure the citizens are taken care of.</p>
 
-          <p>Members of Parliament (MPs) are elected to serve constituencies by representing the citizens in Parliament. Odekro monitors them by making parliamentary debate proceedings (<a href="{% url 'hansard:index' %}">Hansards</a>) freely accessible to the citizens of Ghana. </p>
-          <p>Our goal at Odekro is to promote transparency, provide online access to public records and empower citizens to keep an eye on public officials, especially parliament.</p>
- <hr class="text-center">
-          <h4 class="text-muted"> What has your MP done for you?</h4>
-
+              <p>Members of Parliament (MPs) are elected to serve constituencies by representing the citizens in Parliament. Odekro monitors them by making parliamentary debate proceedings (<a href="{% url 'hansard:index' %}">Hansards</a>) freely accessible to the citizens of Ghana. </p>
+              <p>Our goal at Odekro is to promote transparency, provide online access to public records and empower citizens to keep an eye on public officials, especially parliament.</p>
+          {% endif %}
+          <!-- <hr class="text-center">
+          <h4 class="text-muted"><i class="fa fa-newspaper-o"></i><a href="{% url 'info_page' slug='6thparliamentgh'%}" > Odekro's Report on the 6th Parliament of Ghana</a></h4> -->
+         <!-- <hr class="text-center"> -->
+          <!-- <h4 class="text-muted"> What has your MP done for you?</h4>
           <span class="list-inline text-center">
                <li><a href="{% url 'position_pt' pt_slug='mp' %}" class="col-xs-12 btn btn-sm btn-danger">Find your MP <i class="fa fa-angle-double-right"></i></a></li>
                <li><a href="{% url 'hansard:index' %}" class="col-xs-12 btn btn-sm btn-danger">Browse Hansards <i class="fa fa-angle-double-right"></i></a></li>
-            </span>
+          </span> -->
 
   </div>
 </div>
