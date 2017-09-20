@@ -7,7 +7,7 @@ from pombola.hansard.models import Sitting, Entry
 class UploadModel(models.Model):
     name = models.CharField(max_length=64, blank=True)
     file = models.FileField(upload_to='uploads/%Y/%m/%d/%H/%M/%S')
-    
+
     @property
     def filename(self):
         return self.file.name.rsplit('/', 1)[-1]
@@ -32,6 +32,18 @@ class MP(models.Model):
     religion = models.CharField(max_length=100, blank=True, default='')
     last_employment = models.CharField(max_length=150, blank=True, default='')
     votes_obtained = models.CharField(max_length=150, blank=True, default='')
+
+    def __unicode__(self):
+        if self.middle_name:
+            return "%s %s %s" % (self.first_name, self.middle_name, self.last_name)
+        else:
+            return "%s %s" % (self.first_name, self.last_name)
+
+
+class GhanaMP(Person):
+    class Meta:
+        proxy= True
+        verbose_name = "MP"
 
 
 class HansardEntry(models.Model):
