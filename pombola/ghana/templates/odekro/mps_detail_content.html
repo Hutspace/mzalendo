@@ -24,6 +24,16 @@
 
             <input class="btn btn-xs  btn-default" type="submit" value="Search" />
         </form>
+
+        <form method="get">
+            <span><i class="fa fa-globe"> Order By: </i><span>
+            <select name="order">
+                <option {% if order = 'place' %}selected="selected"{% endif %}value="place">Constituency</option>
+                <option {% if order = 'name' %}selected="selected"{% endif %} value="name">Name</option>
+            </select>
+
+            <input class="btn btn-xs  btn-default" type="submit" value="Search" />
+        </form>
     </div>
 
     <ul class="list-group listing position-listing">
