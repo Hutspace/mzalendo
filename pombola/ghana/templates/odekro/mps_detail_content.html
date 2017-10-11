@@ -34,6 +34,21 @@
 
             <input class="btn btn-xs  btn-default" type="submit" value="Search" />
         </form>
+
+        <p><i class="fa fa-globe"> Filter by date ranges: </i></p>
+        <form method="get">
+            <span>Start date </span><select name="start_date">
+                {% for mp_end_date, mp_start_date in date_choices %}
+                <option {% if start_date = mp_start_date %}selected="selected"{% endif %}value={{ mp_start_date }}>{{ mp_start_date }}</option>
+                {% endfor %}
+            </select>
+            <span>End date </span><select name="end_date">
+                {% for mp_end_date, mp_start_date in date_choices %}
+                <option {% if end_date = mp_end_date %}selected="selected"{% endif %} value={{ mp_end_date }}>{{ mp_end_date }}</option>
+                {% endfor %}
+            </select>
+            <input class="btn btn-xs  btn-default" type="submit" value="Search" />
+        </form>
     </div>
 
     <ul class="list-group listing position-listing">
