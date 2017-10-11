@@ -237,7 +237,15 @@ def position(request, pt_slug, ok_slug=None, o_slug=None):
                                               slug=ok_slug)
         page_title += " of any " + organisation_kind.name
 
-    positions = title.position_set.all().currently_active()
+# Determine whether position_set should be all or only active ones.
+    start_date = request.GET.get('start_date')
+    end_date = request.GET.get('end_date')
+    if start_date and end_date:
+        positions = title.position_set.all()
+        positions = positions.filter(start_date__lte=start_date, end_date__gte=start_date) | positions.filter(start_date__lte=end_date, start_date__gte=end_date)
+    else:
+        positions = title.position_set.all().currently_active()
+
     if ok_slug is not None:
         positions = positions.filter(organisation__kind__slug=ok_slug)
     if o_slug is not None:
