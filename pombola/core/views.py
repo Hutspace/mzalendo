@@ -224,6 +224,9 @@ def position(request, pt_slug, ok_slug=None, o_slug=None):
         slug=pt_slug
     )
 
+    # Get unique pair of start and end dates.
+    date_choices = models.Position.objects.exclude(end_date='future', start_date='').values_list('end_date', 'start_date').distinct()
+
     page_title = title.name
     if o_slug:
         organisation = get_object_or_404(models.Organisation,
